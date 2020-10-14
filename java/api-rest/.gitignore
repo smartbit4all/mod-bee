@@ -1,0 +1,12 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+
+bin
+
+!build
+build/*
+!build/api
+build/api/*
+!build/api/generated
+build/api/generated/*
+!build/api/generated/src

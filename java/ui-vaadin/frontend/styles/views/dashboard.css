@@ -1,0 +1,74 @@
+div .dashboard__actualEvent{
+  margin-top: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0px 5px #888888;
+}
+
+div .dashboard__actualEvent:not(:last-child){
+  margin-right: 20px;
+}
+
+div .dashboard__actualEvent_clicked{
+  margin-top: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0px 5px red;
+}
+
+div .dashboard__actualEvent_clicked:not(:last-child){
+  margin-right: 20px;
+  box-shadow: 0px 5px red;
+}
+
+div .dashboard__actualEventDiv label:first-child {
+  font-weight: bold;
+  font-size: 35px;
+}
+
+
+div .dashboard__eventchannel{
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+div .dashboard__eventchannel label:not(:first-child){
+  font-weight: bold;
+}
+
+div .dashboard__actualProcessStat label:not(:first-child){
+  font-weight: bold;
+}
+
+div .dashboard__actualProcessStatData label{
+  padding: 2px;
+  background-color: Gainsboro;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+div .dashboard__actualProcessStat {
+  margin-top: 20px;
+}
+
+div {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+div .dashboard__eventChannelStatArany label:first-child{
+  color: springgreen;
+  font-weight: bold;
+}
+
+div .dashboard__eventChannelStatArany label:last-child{
+  color: red;
+  font-weight: bold;
+}
+
+div .dashboard__actualProcessStatData vaadin-button{
+  color: royalblue;
+  padding-left: 10px;
+}
+
+div .dashboard__headerLayout{
+  justify-content: space-between;
+}

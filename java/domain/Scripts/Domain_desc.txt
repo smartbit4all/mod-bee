@@ -1,0 +1,55 @@
+EventBody
+Column	Type name	Database type	Mandatory
+identifier	UUID	VARCHAR2(50)	Y	
+actionCode	NaturalName	VARCHAR2(250)	Y	
+createdAt	Timestamp	TIMESTAMP	Y	
+businessEntity	CodeIdentifier	VARCHAR2(25)	N	
+businessEntityRef	StringIdentifier	VARCHAR2(60)	N	
+extensionText	Description	VARCHAR2(2000)	N	
+sessionId	StringIdentifier	VARCHAR2(60)	Y	
+eventChannel	StringIdentifier	VARCHAR2(60)	Y	
+REQUEST_ID	identifier	NUMBER(38)	N
+LASTPROCESSLOG_ID	identifier	NUMBER(38)	N
+EVENTBODY_ID	identifier	NUMBER(38)	Y
+
+ActiveEvent
+Column	Type name	Database type	Mandatory
+nextProcessTime	Timestamp	TIMESTAMP	Y	
+eventChannel	StringIdentifier	VARCHAR2(60)	Y	
+state	EnumCode	CHAR(1)	Y	
+EVENTBODY_ID	identifier	NUMBER(38)	Y
+APPLICATIONRUNTIME_ID	identifier	NUMBER(38)	N
+ACTIVEEVENT_ID	identifier	NUMBER(38)	Y
+
+EventBinaryContent
+Column	Type name	Database type	Mandatory
+lobData	BinaryData	BLOB	Y	
+mimeType	CodeIdentifier	VARCHAR2(25)	Y	
+EVENTBINARYCONTENT_ID	identifier	NUMBER(38)	Y
+
+EventProcessLog
+Column	Type name	Database type	Mandatory
+resultCode	StringIdentifier	VARCHAR2(60)	N	
+processStartTime	Timestamp	TIMESTAMP	N	
+processFinishTime	Timestamp	TIMESTAMP	N	
+state	EnumCode	CHAR(1)	Y	
+orderNo	Integer	NUMBER(18)	Y	
+allocationTime	Timestamp	TIMESTAMP	Y	
+expectedAllocationTime	Timestamp	TIMESTAMP	Y	
+EVENTBODY_ID	identifier	NUMBER(38)	Y
+RESULT_ID	identifier	NUMBER(38)	N
+APPLICATIONRUNTIME_ID	identifier	NUMBER(38)	Y
+EVENTPROCESSLOG_ID	identifier	NUMBER(38)	Y
+
+ApplicationRuntime
+Column	Type name	Database type	Mandatory
+startTime	Timestamp	TIMESTAMP	Y	
+stopTime	Timestamp	TIMESTAMP	N	
+lastTouchTime	Timestamp	TIMESTAMP	Y	
+code	CodeIdentifier	VARCHAR2(25)	Y	
+APPLICATIONRUNTIME_ID	identifier	NUMBER(38)	Y
+
+EventChannel
+Column	Type name	Database type	Mandatory
+code	StringIdentifier	VARCHAR2(60)	Y	
+EVENTCHANNEL_ID	identifier	NUMBER(38)	Y

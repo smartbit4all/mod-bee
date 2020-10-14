@@ -1,0 +1,96 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo1.maven.org/maven2" }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url "https://oss.sonatype.org/content/repositories/releases/"
+        }
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        // Updated version can be passed via command line arg as -PopenApiGeneratorVersion=VERSION
+        classpath "org.openapitools:openapi-generator-gradle-plugin:4.3.1"
+    }
+}
+
+plugins {
+    id 'org.openapi.generator' version '4.3.1'
+    id 'java-library'
+}
+
+apply plugin: 'org.openapi.generator'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+	// Directory for generated main Java soures.
+	srcGenMainJava = "src-gen/main/java"
+}
+
+sourceSets {
+   generated{
+   		java.srcDir srcGenMainJava
+    }
+}
+
+dependencies {
+	api 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
+    api 'org.openapitools:jackson-databind-nullable:0.2.1'
+    api 'io.swagger:swagger-annotations:1.5.22'
+	api "io.springfox:springfox-swagger2:2.9.2"
+	api "io.springfox:springfox-swagger-common:2.9.2"
+	api "io.springfox:springfox-swagger-ui:2.9.2"
+
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "${projectDir}/src/main/resources/static/swagger-apis/api1/business-event.yaml".toString()
+    outputDir = "${projectDir}/${srcGenMainJava}" 
+//	outputDir = "$projectDir/src-gen/main/java".toString()
+    apiPackage = "org.smartbit4all.businessevent.rest.service"
+    //invokerPackage = "org.it4all.rest.invoker"
+    modelPackage = "org.smartbit4all.businessevent.rest.model"
+    configOptions = [
+        dateLibrary: "java8",
+        delegatePattern: 'true',
+        unhandledException: 'true',
+        generateModelTests: 'true',
+        hideGenerationTimestamp: 'true',
+        sourceFolder: '' // without this the generatum is placed under 'src/main/java'
+    ]
+}
+
+task deleteOpenApiUnusedGen(type: Delete) {
+	delete 	"${srcGenMainJava}/pom.xml",
+			"${srcGenMainJava}/src",
+			"${srcGenMainJava}/.openapi-generator",
+			"${srcGenMainJava}/README.md",
+			"${srcGenMainJava}/.openapi-generator-ignore"
+}
+
+task deleteGenFolder(type: Delete) {
+	delete "${srcGenMainJava}"
+}
+
+task generateCommunicationBeans {
+	dependsOn(deleteGenFolder)
+    dependsOn(tasks.openApiGenerate).finalizedBy(deleteOpenApiUnusedGen)
+    tasks.findByName('openApiGenerate').mustRunAfter 'deleteGenFolder'
+}
+
+compileJava {
+	dependsOn(generateCommunicationBeans)
+    source    += sourceSets.generated.java
+}
+
+clean {
+	dependsOn(deleteGenFolder)
+}

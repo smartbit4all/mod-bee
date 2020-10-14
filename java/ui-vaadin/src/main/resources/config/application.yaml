@@ -1,0 +1,13 @@
+
+spring:
+  application:
+    name: bee-ui
+  profiles:
+    active: #spring.profiles.active#
+
+vaadin:
+  compatibilityMode: false
+
+server:
+  port: 9070
+

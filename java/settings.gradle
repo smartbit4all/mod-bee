@@ -1,0 +1,11 @@
+rootProject.name = 'business-event'
+include 'business-event-domain'
+include 'business-event-api-rest'
+include 'business-event-server'
+include 'business-event-ui-vaadin'
+project(':business-event-domain').projectDir = file('domain')
+project(':business-event-api-rest').projectDir = file('api-rest')
+project(':business-event-server').projectDir = file('server')
+project(':business-event-ui-vaadin').projectDir = file('ui-vaadin')
+
+includeBuild '../../platform'
