@@ -8,4 +8,4 @@ project(':business-event-api-rest').projectDir = file('api-rest')
 project(':business-event-server').projectDir = file('server')
 project(':business-event-ui-vaadin').projectDir = file('ui-vaadin')
 
-includeBuild '../../smartbit4all/platform'
+includeBuild '../platform'
