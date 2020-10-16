@@ -20,6 +20,9 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/domain/domain">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ui-common/ui-common">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
