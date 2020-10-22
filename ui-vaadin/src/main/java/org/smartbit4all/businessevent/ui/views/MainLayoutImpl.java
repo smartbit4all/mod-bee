@@ -3,7 +3,6 @@ package org.smartbit4all.businessevent.ui.views;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smartbit4all.businessevent.ui.views.statistics.DashBoard;
-import org.smartbit4all.businessevent.ui.views.statistics.Statistics;
 import org.smartbit4all.ui.vaadin.components.FlexBoxLayout;
 import org.smartbit4all.ui.vaadin.components.navigation.bar.AppBar;
 import org.smartbit4all.ui.vaadin.components.navigation.bar.TabBar;
@@ -95,7 +94,7 @@ public class MainLayoutImpl extends FlexBoxLayout
    * Initialise the required components and containers.
    */
   private void initStructure() {
-    naviDrawer = new NaviDrawer(getTranslation("login.appname"));
+    naviDrawer = new NaviDrawer(getTranslation("login.appname"), "bee-v1.jpg");
 
     viewContainer = new FlexBoxLayout();
     viewContainer.addClassName(CLASS_NAME + "__view-container");
@@ -270,6 +269,11 @@ public class MainLayoutImpl extends FlexBoxLayout
     if (active != null) {
       getAppBar().setTitle(active.getText());
     }
+  }
+
+  @Override
+  public <T extends Component> Class<T> getHomeView() {
+    return (Class<T>) Home.class;
   }
 
 }
