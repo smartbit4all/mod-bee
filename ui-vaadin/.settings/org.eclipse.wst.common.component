@@ -3,7 +3,6 @@
 	<wb-module deploy-name="business-event-ui-vaadin">
 		<property name="context-root" value="business-event-ui-vaadin"/>
 		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
-		<wb-resource deploy-path="/WEB-INF/classes" source-path="build/vaadin-generated"/>
 		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ui-vaadin/ui-vaadin">
 			<dependency-type>uses</dependency-type>
@@ -17,10 +16,10 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/business-event-domain/business-event-domain">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/domain/domain">
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ui-common/ui-common">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ui-common/ui-common">
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/domain/domain">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
