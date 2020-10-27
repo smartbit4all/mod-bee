@@ -1,24 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project-modules id="moduleCoreId" project-version="1.5.0">
-	<wb-module deploy-name="business-event-server">
-		<property name="context-root" value="business-event-server"/>
-		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
-		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
-		<wb-resource deploy-path="/" source-path="src/main/webapp"/>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/sql/sql">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/business-event-domain/business-event-domain">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/domain/domain">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/business-event-api-rest/business-event-api-rest">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
-	</wb-module>
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    	
+    <wb-module deploy-name="bee-server">
+        		
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
+        		
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
+        		
+        <wb-resource deploy-path="/" source-path="src/main/webapp"/>
+        		
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/sql/sql">
+            			
+            <dependency-type>uses</dependency-type>
+            		
+        </dependent-module>
+        		
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/business-event-domain/business-event-domain">
+            			
+            <dependency-type>uses</dependency-type>
+            		
+        </dependent-module>
+        		
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/domain/domain">
+            			
+            <dependency-type>uses</dependency-type>
+            		
+        </dependent-module>
+        		
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/business-event-api-rest/business-event-api-rest">
+            			
+            <dependency-type>uses</dependency-type>
+            		
+        </dependent-module>
+        		
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/core/core">
+            			
+            <dependency-type>uses</dependency-type>
+            		
+        </dependent-module>
+        <property name="context-root" value="bee-server"/>
+        	
+    </wb-module>
+    
 </project-modules>

@@ -52,7 +52,7 @@ dependencies {
 	api 'org.smartbit4all.platform:sql'
 	api 'org.smartbit4all.platform:json'
 	
-	implementation project(':business-event-domain')
+	implementation project(':bee-domain')
 
 	implementation 'dev.mett.vaadin:tooltip:1.5.0-alpha'
 	implementation 'com.google.code.gson:gson:2.8.6'

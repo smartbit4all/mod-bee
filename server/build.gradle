@@ -21,8 +21,8 @@ dependencies {
 	implementation 'org.smartbit4all.platform:domain'
 	implementation 'org.smartbit4all.platform:sql'
 
-	implementation project(':business-event-api-rest')
-	implementation project(':business-event-domain')
+	implementation project(':bee-api-rest')
+	implementation project(':bee-domain')
 
     //providedRuntime 'com.oracle.database.jdbc:ojdbc8:12.2.0.1'
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8:12.2.0.1'

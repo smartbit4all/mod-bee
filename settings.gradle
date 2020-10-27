@@ -1,11 +1,11 @@
 rootProject.name = 'business-event'
-include 'business-event-domain'
-include 'business-event-api-rest'
-include 'business-event-server'
-include 'business-event-ui-vaadin'
-project(':business-event-domain').projectDir = file('domain')
-project(':business-event-api-rest').projectDir = file('api-rest')
-project(':business-event-server').projectDir = file('server')
-project(':business-event-ui-vaadin').projectDir = file('ui-vaadin')
+include 'bee-domain'
+include 'bee-api-rest'
+include 'bee-server'
+include 'bee-ui-vaadin'
+project(':bee-domain').projectDir = file('domain')
+project(':bee-api-rest').projectDir = file('api-rest')
+project(':bee-server').projectDir = file('server')
+project(':bee-ui-vaadin').projectDir = file('ui-vaadin')
 
 includeBuild '../platform'

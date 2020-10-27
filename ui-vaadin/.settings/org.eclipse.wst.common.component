@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-	<wb-module deploy-name="business-event-ui-vaadin">
-		<property name="context-root" value="business-event-ui-vaadin"/>
+	<wb-module deploy-name="bee-ui-vaadin">
+		<property name="context-root" value="bee-ui-vaadin"/>
 		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
 		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ui-vaadin/ui-vaadin">
@@ -13,7 +13,7 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/json/json">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/business-event-domain/business-event-domain">
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/bee-domain/bee-domain">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/ui-common/ui-common">
