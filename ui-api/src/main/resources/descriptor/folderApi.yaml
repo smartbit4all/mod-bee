@@ -1,0 +1,121 @@
+openapi: 3.0.1
+info:
+  title: Document-management ui api
+  description: Document-management ui api...
+  termsOfService: ''
+  contact:
+    email: info@it4all.hu
+  version: 1.0.0
+tags:
+  - name: Document-management
+    description: Document-management
+paths:
+  /getFolders/{folderId*}:
+    get:
+      tags:
+      - Document-management
+      summary: Find folders by ID
+      description: Returns the folder list
+      operationId: getFoldersByIds
+      parameters:
+      - name: folderId*
+        in: path
+        description: IDs of folders to return
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FolderList'
+        400:
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentApiError'
+components:
+  schemas:
+    FolderEntry:
+      type: object
+      required:
+      - "displayKind"
+      - "parent"
+      - "mimeType"
+      properties:
+        displayKind:
+          type: string
+          enum: 
+            - FOLDER
+            - DOCUMENT
+        parent:
+          $ref: '#/components/schemas/Folder'
+        folder:
+          $ref: '#/components/schemas/Folder'
+        document:
+          $ref: '#/components/schemas/Document'
+        mimeType:
+          $ref: '#/components/schemas/MimeType'
+    Folder:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the folder.
+        name:
+          type: string
+          description: The name of the folder.
+    FolderList:
+      type: object
+      properties:
+        folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Folder'
+    FolderEntryList:
+      type: object
+      properties:
+        folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderEntry'
+    MimeType:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The name resource key of the content type
+        iconResource:
+          type: string
+          description: The identifier of the icon resource associated with the content type. The API consumer must be prepared to interpret this string.
+        handler:
+          type: string
+          description: The handler (tipically the class name of the mime type management interface)
+    Document:
+      type: object
+      properties:
+        name:
+          type: string
+        hasVersion:
+          type: boolean
+        content:
+          $ref: '#/components/schemas/DocumentContent'
+    DocumentContent:
+      type: object
+      properties:
+        id:
+          type: string
+        size:
+          type: integer
+          format: int64
+        numberOfPages:
+          type: integer
+          format: int64
+    DocumentApiError:
+      type: object
+      properties:
+        code:
+          type: string

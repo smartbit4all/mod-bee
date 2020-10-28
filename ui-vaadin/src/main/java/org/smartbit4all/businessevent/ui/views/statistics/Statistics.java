@@ -2,7 +2,6 @@ package org.smartbit4all.businessevent.ui.views.statistics;
 
 import org.smartbit4all.businessevent.ui.entities.Payment;
 import org.smartbit4all.businessevent.ui.service.StatDataService;
-import org.smartbit4all.businessevent.ui.views.MainLayoutImpl;
 import org.smartbit4all.ui.vaadin.components.DataSeriesItemWithRadius;
 import org.smartbit4all.ui.vaadin.components.FlexBoxLayout;
 import org.smartbit4all.ui.vaadin.components.ListItem;
@@ -45,11 +44,10 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
 
-@CssImport("./styles/views/statistics.css")
+@CssImport("./bee/styles/views/statistics.css")
 @PageTitle("Statistics")
-//@Route(value = "", layout = MainLayoutImpl.class)
+// @Route(value = "", layout = MainLayoutImpl.class)
 public class Statistics extends ViewFrame {
 
   private static final String CLASS_NAME = "statistics";

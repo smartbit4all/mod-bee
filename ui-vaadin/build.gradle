@@ -34,7 +34,6 @@ configurations {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'com.vaadin:vaadin-charts-flow'
 	implementation 'com.vaadin:vaadin-board-flow'
 	implementation('com.vaadin:vaadin-spring-boot-starter') {

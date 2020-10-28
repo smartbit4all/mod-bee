@@ -1,0 +1,4 @@
+dependencies {
+	api project(':bee-ui-api')
+	implementation 'org.smartbit4all.platform:ui-common'
+}

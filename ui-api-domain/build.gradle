@@ -1,0 +1,7 @@
+
+dependencies {
+	api project(':bee-domain')
+	api project(':bee-ui-api')
+	
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+}
