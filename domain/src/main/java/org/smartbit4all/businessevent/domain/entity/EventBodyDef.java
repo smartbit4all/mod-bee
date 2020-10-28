@@ -11,14 +11,18 @@ import org.smartbit4all.domain.meta.EntityDefinition;
 import org.smartbit4all.domain.meta.EntityService;
 import org.smartbit4all.domain.meta.Property;
 
-
-
 @Entity(EventBodyDef.ENTITY_NAME)
 @Table(EventBodyDef.TABLE_NAME)
 public interface EventBodyDef extends EntityDefinition {
 
 	public static final String ENTITY_NAME = "EventBodyDef";
 	public static final String TABLE_NAME = "EventBody";
+
+	public static final String EVENTBODY_ID = "EVENTBODY_ID";
+	public static final String EVENTBODY_ID_COL = "EVENTBODY_ID";
+
+	public static final String REQUEST_ID = "REQUEST_ID";
+	public static final String REQUEST_ID_COL = "REQUEST_ID";
 
 	public static final String IDENTIFIER = "IDENTIFIER";
 	public static final String IDENTIFIER_COL = "IDENTIFIER";
@@ -44,18 +48,19 @@ public interface EventBodyDef extends EntityDefinition {
 	public static final String EVENTCHANNEL = "EVENTCHANNEL";
 	public static final String EVENTCHANNEL_COL = "EVENTCHANNEL";
 
-	public static final String EVENTBODY_ID = "EVENTBODY_ID";
-	public static final String EVENTBODY_ID_COL = "EVENTBODY_ID";
-
-	public static final String REQUEST_ID = "REQUEST_ID";
-	public static final String REQUEST_ID_COL = "REQUEST_ID";
-
 	public static final String LASTPROCESSLOG_ID = "LASTPROCESSLOG_ID";
 	public static final String LASTPROCESSLOG_ID_COL = "LASTPROCESSLOG_ID";
 
 	@OwnProperty(name = EVENTBODY_ID, columnName = EVENTBODY_ID_COL)
 	@Id
 	Property<Long> eventBodyId();
+
+	@OwnProperty(name = REQUEST_ID_COL, columnName = REQUEST_ID)
+	Property<Long> requestId();
+
+	@ReferenceEntity
+	@Join(source = REQUEST_ID, target = EventBinaryContentDef.EVENTBINARYCONTENT_ID)
+	EventBinaryContentDef request();
 
 	@OwnProperty(name = IDENTIFIER, columnName = IDENTIFIER_COL)
 	Property<String> identifier();
@@ -81,13 +86,6 @@ public interface EventBodyDef extends EntityDefinition {
 	@OwnProperty(name = EVENTCHANNEL, columnName = EVENTCHANNEL_COL)
 	Property<String> eventChannel();
 
-	@OwnProperty(name = REQUEST_ID_COL, columnName = REQUEST_ID)
-	Property<Long> requestId();
-
-	@ReferenceEntity
-	@Join(source = REQUEST_ID, target = EventBinaryContentDef.EVENTBINARYCONTENT_ID)
-	EventBinaryContentDef request();
-
 	@OwnProperty(name = LASTPROCESSLOG_ID_COL, columnName = LASTPROCESSLOG_ID)
 	Property<Long> lastProcessLogId();
 
@@ -97,5 +95,4 @@ public interface EventBodyDef extends EntityDefinition {
 
 	@Override
 	EntityService<EventBodyDef> services();
-
 }

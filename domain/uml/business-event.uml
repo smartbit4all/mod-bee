@@ -101,7 +101,7 @@ schedule time.</body>
     </packagedElement>
     <packagedElement xmi:type="uml:Interface" xmi:id="_ESA5T6rSEeqwasKhGu9goQ" name="EventProcessLog">
       <ownedAttribute xmi:type="uml:Property" xmi:id="_ESA5UKrSEeqwasKhGu9goQ" name="eventbody" type="_ER9O4KrSEeqwasKhGu9goQ" association="_ESCHYKrSEeqwasKhGu9goQ"/>
-      <ownedAttribute xmi:type="uml:Property" xmi:id="_ESA5UarSEeqwasKhGu9goQ" name="resultCode" type="_hDXbkKsQEeqI-_Il1SnNWw" isReadOnly="true">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="_ESA5UarSEeqwasKhGu9goQ" name="resultCode" type="_WmG5kN1EEeqdr_fSkdhASA" isReadOnly="true">
         <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_nsY1kOjrEeqYQJdFXU2uSA"/>
       </ownedAttribute>
       <ownedAttribute xmi:type="uml:Property" xmi:id="_ESA5UqrSEeqwasKhGu9goQ" name="processStartTime" type="_JwRpAKrjEeq3dKt4-G9qeg" isReadOnly="true">

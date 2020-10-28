@@ -478,7 +478,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     processLog.services().crud().update()
         .values(TableDatas.builder(processLog).addRow()
             .set(processLog.processFinishTime(), now)
-            .set(processLog.resultCode(), ex == null ? "OK" : "Failed")
+            .set(processLog.resultCode(), ex == null ? "OK" : getExceptionResult(ex))
             .set(processLog.state(), nextState.name())
             .setNotNull(processLog.resultId(), resultId)
             .set(processLog.eventProcessLogId(), currentState.processId).build())
@@ -511,6 +511,13 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     return currentState;
   }
 
+
+  private String getExceptionResult(Throwable throwable) {
+    if (throwable.getCause() != null) {
+      return getExceptionResult(throwable.getCause());
+    }
+    return throwable.getMessage();
+  }
 
   protected Long saveEventException(Exception ex) throws Exception {
     BinaryData data = marshallException(ex);

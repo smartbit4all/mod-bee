@@ -14,31 +14,37 @@ import org.smartbit4all.businessevent.domain.entity.EventChannelDef;
 
 @Import(MetaConfiguration.class)
 @Configuration
-public class BusinessEventEntityConfig extends EntityConfiguration {
+public class BusinessEventEntityConfig extends EntityConfiguration { 
 
-  @Bean(EventBodyDef.ENTITY_NAME)
-  public EventBodyDef eventBodyDef() {
-    return createEntityProxy(EventBodyDef.class);
-  }
-  @Bean(ActiveEventDef.ENTITY_NAME)
-  public ActiveEventDef activeEventDef() {
-    return createEntityProxy(ActiveEventDef.class);
-  }
-  @Bean(EventBinaryContentDef.ENTITY_NAME)
-  public EventBinaryContentDef eventBinaryContentDef() {
-    return createEntityProxy(EventBinaryContentDef.class);
-  }
-  @Bean(EventProcessLogDef.ENTITY_NAME)
-  public EventProcessLogDef eventProcessLogDef() {
-    return createEntityProxy(EventProcessLogDef.class);
-  }
-  @Bean(ApplicationRuntimeDef.ENTITY_NAME)
-  public ApplicationRuntimeDef applicationRuntimeDef() {
-    return createEntityProxy(ApplicationRuntimeDef.class);
-  }
-  @Bean(EventChannelDef.ENTITY_NAME)
-  public EventChannelDef eventChannelDef() {
-    return createEntityProxy(EventChannelDef.class);
-  }
-  
+	@Bean(EventBodyDef.ENTITY_NAME)
+	public EventBodyDef eventBodyDef() {
+		 return createEntityProxy(EventBodyDef.class);
+	}
+
+	@Bean(ActiveEventDef.ENTITY_NAME)
+	public ActiveEventDef activeEventDef() {
+		 return createEntityProxy(ActiveEventDef.class);
+	}
+
+	@Bean(EventBinaryContentDef.ENTITY_NAME)
+	public EventBinaryContentDef eventBinaryContentDef() {
+		 return createEntityProxy(EventBinaryContentDef.class);
+	}
+
+	@Bean(EventProcessLogDef.ENTITY_NAME)
+	public EventProcessLogDef eventProcessLogDef() {
+		 return createEntityProxy(EventProcessLogDef.class);
+	}
+
+	@Bean(ApplicationRuntimeDef.ENTITY_NAME)
+	public ApplicationRuntimeDef applicationRuntimeDef() {
+		 return createEntityProxy(ApplicationRuntimeDef.class);
+	}
+
+	@Bean(EventChannelDef.ENTITY_NAME)
+	public EventChannelDef eventChannelDef() {
+		 return createEntityProxy(EventChannelDef.class);
+	}
+
+
 }

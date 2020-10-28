@@ -9,14 +9,15 @@ import org.smartbit4all.domain.meta.EntityDefinition;
 import org.smartbit4all.domain.meta.EntityService;
 import org.smartbit4all.domain.meta.Property;
 
-
-
 @Entity(ApplicationRuntimeDef.ENTITY_NAME)
 @Table(ApplicationRuntimeDef.TABLE_NAME)
 public interface ApplicationRuntimeDef extends EntityDefinition {
 
 	public static final String ENTITY_NAME = "ApplicationRuntimeDef";
 	public static final String TABLE_NAME = "ApplicationRuntime";
+
+	public static final String APPLICATIONRUNTIME_ID = "APPLICATIONRUNTIME_ID";
+	public static final String APPLICATIONRUNTIME_ID_COL = "APPLICATIONRUNTIME_ID";
 
 	public static final String STARTTIME = "STARTTIME";
 	public static final String STARTTIME_COL = "STARTTIME";
@@ -29,9 +30,6 @@ public interface ApplicationRuntimeDef extends EntityDefinition {
 
 	public static final String CODE = "CODE";
 	public static final String CODE_COL = "CODE";
-
-	public static final String APPLICATIONRUNTIME_ID = "APPLICATIONRUNTIME_ID";
-	public static final String APPLICATIONRUNTIME_ID_COL = "APPLICATIONRUNTIME_ID";
 
 	@OwnProperty(name = APPLICATIONRUNTIME_ID, columnName = APPLICATIONRUNTIME_ID_COL)
 	@Id
@@ -51,5 +49,4 @@ public interface ApplicationRuntimeDef extends EntityDefinition {
 
 	@Override
 	EntityService<ApplicationRuntimeDef> services();
-
 }

@@ -9,8 +9,6 @@ import org.smartbit4all.domain.meta.EntityDefinition;
 import org.smartbit4all.domain.meta.EntityService;
 import org.smartbit4all.domain.meta.Property;
 
-
-
 @Entity(EventBinaryContentDef.ENTITY_NAME)
 @Table(EventBinaryContentDef.TABLE_NAME)
 public interface EventBinaryContentDef extends EntityDefinition {
@@ -18,14 +16,14 @@ public interface EventBinaryContentDef extends EntityDefinition {
 	public static final String ENTITY_NAME = "EventBinaryContentDef";
 	public static final String TABLE_NAME = "EventBinaryContent";
 
+	public static final String EVENTBINARYCONTENT_ID = "EVENTBINARYCONTENT_ID";
+	public static final String EVENTBINARYCONTENT_ID_COL = "EVENTBINARYCONTENT_ID";
+
 	public static final String LOBDATA = "LOBDATA";
 	public static final String LOBDATA_COL = "LOBDATA";
 
 	public static final String MIMETYPE = "MIMETYPE";
 	public static final String MIMETYPE_COL = "MIMETYPE";
-
-	public static final String EVENTBINARYCONTENT_ID = "EVENTBINARYCONTENT_ID";
-	public static final String EVENTBINARYCONTENT_ID_COL = "EVENTBINARYCONTENT_ID";
 
 	@OwnProperty(name = EVENTBINARYCONTENT_ID, columnName = EVENTBINARYCONTENT_ID_COL)
 	@Id
@@ -39,5 +37,4 @@ public interface EventBinaryContentDef extends EntityDefinition {
 
 	@Override
 	EntityService<EventBinaryContentDef> services();
-
 }
