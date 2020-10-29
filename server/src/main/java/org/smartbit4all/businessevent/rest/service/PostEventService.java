@@ -11,7 +11,6 @@ import org.smartbit4all.businessevent.rest.model.BusinessEventRequest;
 import org.smartbit4all.businessevent.rest.model.BusinessEventState;
 import org.smartbit4all.businessevent.rest.model.BusinessEventState.StateEnum;
 import org.smartbit4all.domain.application.TimeManagementService;
-import org.smartbit4all.domain.data.TableData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,9 +35,6 @@ public class PostEventService implements PostEventApiDelegate {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public ResponseEntity<BusinessEventState> postEvent(BusinessEventRequest body) throws Exception {
     log.info("postEvent");
-
-    appRuntime.services().crud().query().all().lock()
-        .into(new TableData<>(appRuntime)).execute();
 
     BusinessEventChannel eventChannel = beService.channel(body.getChannel());
     BusinessEventData event = new BusinessEventData();

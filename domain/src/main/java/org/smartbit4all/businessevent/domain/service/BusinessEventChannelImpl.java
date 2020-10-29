@@ -57,7 +57,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
   private static final Logger log = LoggerFactory.getLogger(BusinessEventChannelImpl.class);
 
   private static final RuntimeException reSyncFailed =
-      new RuntimeException("Failed to process because server shutdown.");
+      new RuntimeException("Failed to process because of server shutdown.");
 
   /**
    * The this as the interface Proxy! Use this instead of calling the methods directly.
@@ -299,7 +299,8 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
         .set(eventBody.createdAt(), now)
         .set(eventBody.eventChannel(), getChannelCode())
         .set(eventBody.extensionText(), event.extensionText)
-        .setNotNull(eventBody.requestId(), event.request != null ? createBinaryContent(event.request) : null)
+        .setNotNull(eventBody.requestId(),
+            event.request != null ? createBinaryContent(event.request) : null)
         .set(eventBody.sessionId(), event.sessionId).build();
 
     eventBody.services().crud().create().values(tdBody).execute();
@@ -383,7 +384,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     result.dbId = bodyId;
     result.state = state;
     result.nextProcessTime = nextProcessTime;
-    result.numberOfFailedProcesses = 0l;
+    result.previousExecutions = 0l;
     result.processId = processLogId;
     result.eventData = event;
 
@@ -402,6 +403,115 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
   }
 
   @Override
+  public BusinessEventState saveEventProcessReschedule(BusinessEventData event,
+      BusinessEventState currentState,
+      BusinessEventSchedule schedule) throws Exception {
+    removeActiveEvent(currentState.dbId);
+    // We need the active event record to store the fact of execution.
+    BuilderWithFlexibleProperties<ActiveEventDef> builderActiveEvent =
+        TableDatas.builder(activeEvent);
+    // We need to add a new process log entry to initiate planned process itself.
+    BuilderWithFlexibleProperties<EventProcessLogDef> builderProcessLog =
+        TableDatas.builder(processLog);
+    // We need to update the event itself to increment the number of processing and to set the new
+    // process log record as the current one.
+    BuilderWithFlexibleProperties<EventBodyDef> builderEventBody =
+        TableDatas.builder(eventBody);
+
+    LocalDateTime now = timeService.getSystemTime();
+    LocalDateTime nextProcessTime = schedule.getNextProcessTime(now);
+
+
+    Long processLogId = getNextEventId();
+    currentState.previousExecutions++;
+    currentState.processId = processLogId;
+    currentState.nextProcessTime = nextProcessTime;
+
+    // We should decide if we are already allocate the given event.
+    LocalDateTime allocationTime;
+    LocalDateTime processStartTime = null;
+    BusinessEventStateEnum state;
+    if (getType() == ChannelType.SYNCHRONOUS) {
+      // If we are synchronous channel or we have to execute the event immediately then we can set
+      // the allocation time and the state to waiting for execution.
+      allocationTime = now;
+      state = BusinessEventStateEnum.E;
+      // In this case we have a synchronous channel. We set the process start time to the next
+      // process time. If it's later than now then we will sleep a little bit before the real
+      // execution.
+      processStartTime = nextProcessTime;
+    } else if (!nextProcessTime.isAfter(now)) {
+      // We set the waiting for execution as a state.
+      allocationTime = now;
+      state = BusinessEventStateEnum.W;
+    } else {
+      // We don't set the allocation time but we set the state to waiting for allocation.
+      allocationTime = null;
+      state = BusinessEventStateEnum.A;
+    }
+    // Figure out if we must set the application runtime or not.
+    Long appRunTime = state != BusinessEventStateEnum.A ? getRuntimeId() : null;
+    currentState.state = state;
+
+    if (currentState.state != BusinessEventStateEnum.A) {
+      builderProcessLog.addRow()
+          .set(processLog.eventbodyId(), currentState.dbId)
+          .set(processLog.eventProcessLogId(), processLogId)
+          .set(processLog.expectedAllocationTime(), nextProcessTime) // We need a more sophisticated
+                                                                     // decision here!
+          .set(processLog.allocationTime(), allocationTime)
+          .set(processLog.applicationruntimeId(),
+              appRunTime)
+          .set(processLog.orderNo(), currentState.previousExecutions + 1)
+          .set(processLog.state(), state.name())
+          .set(processLog.processStartTime(), processStartTime);
+
+      // We need to update the event body to set the process log.
+      builderEventBody.addRow()
+          .set(eventBody.eventBodyId(), currentState.dbId)
+          .set(eventBody.lastProcessLogId(), processLogId);
+    }
+
+
+    // If we need to process the event later on then we need the active event record.
+    builderActiveEvent.addRow()
+        .set(activeEvent.activeEventId(), currentState.dbId)
+        .set(activeEvent.eventbodyId(), currentState.dbId)
+        .set(activeEvent.applicationruntimeId(),
+            appRunTime)
+        .set(activeEvent.nextProcessTime(), nextProcessTime)
+        .set(activeEvent.eventChannel(), getChannelCode())
+        .set(activeEvent.state(), state.name());
+
+
+    // Create the process log if any.
+    if (!builderProcessLog.isEmpty()) {
+      processLog.services().crud().create().values(builderProcessLog.build()).execute();
+    }
+
+    // The next can be the event body update. It will update the last process log value to an
+    // existing record.
+    if (!builderEventBody.isEmpty()) {
+      eventBody.services().crud().update().values(builderEventBody.build()).execute();
+    }
+
+    // The next can be the event body update. It will update the last process log value to an
+    // existing record.
+    if (!builderActiveEvent.isEmpty()) {
+      activeEvent.services().crud().update().values(builderActiveEvent.build()).execute();
+    }
+
+    // The current event is rescheduled to execute again. Therefore the saveProcessFinish must not
+    // delete the active event.
+    currentState.rescheduled = true;
+
+    return currentState;
+  }
+
+  /**
+   * We modify the eventStates to make it up to date.
+   */
+  @Override
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public void saveEventsAllocated(List<BusinessEventState> eventStates) throws Exception {
 
@@ -413,6 +523,9 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     LocalDateTime now = timeService.getSystemTime();
     for (BusinessEventState businessEventState : eventStates) {
       Long nextEventId = getNextEventId();
+      businessEventState.processId = nextEventId;
+      businessEventState.previousExecutions++;
+      businessEventState.state = BusinessEventStateEnum.W;
       builderLog.addRow()
           .set(processLog.eventbodyId(), businessEventState.dbId)
           .set(processLog.eventProcessLogId(), nextEventId)
@@ -421,14 +534,14 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
           .set(processLog.processStartTime(), null)
           .set(processLog.processFinishTime(), null)
           .set(processLog.applicationruntimeId(), getRuntimeId())
-          .set(processLog.orderNo(), businessEventState.numberOfFailedProcesses + 1)
+          .set(processLog.orderNo(), businessEventState.previousExecutions)
           .set(processLog.resultCode(), null)
-          .set(processLog.state(), BusinessEventStateEnum.W.name());
+          .set(processLog.state(), businessEventState.state.name());
 
       builderActiveEvent.addRow()
           .set(activeEvent.activeEventId(), businessEventState.dbId)
           .set(activeEvent.applicationruntimeId(), getRuntimeId())
-          .set(activeEvent.state(), BusinessEventStateEnum.W.name());
+          .set(activeEvent.state(), businessEventState.state.name());
 
       builderEventBody.addRow()
           .set(eventBody.eventBodyId(), businessEventState.dbId)
@@ -443,16 +556,44 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
 
   }
 
+  @Override
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public void saveEventSyncProcessFailed(List<BusinessEventState> failedStates) throws Exception {
+    LocalDateTime now = timeService.getSystemTime();
+    BuilderWithFlexibleProperties<EventProcessLogDef> processLogBuilder =
+        TableDatas.builder(processLog);
+
+    BuilderWithFlexibleProperties<ActiveEventDef> activeEventBuilder =
+        TableDatas.builder(activeEvent);
+
+    // We create one exception result for all the failed process log records.
+    Long resultId = saveEventException(reSyncFailed);
+
+    for (BusinessEventState eventState : failedStates) {
+      processLogBuilder.addRow()
+          .set(processLog.processFinishTime(), now)
+          .set(processLog.resultCode(), "Failed")
+          .set(processLog.state(), BusinessEventStateEnum.F.name())
+          .set(processLog.resultId(), resultId)
+          .set(processLog.eventProcessLogId(), eventState.processId);
+      activeEventBuilder.addRow().set(activeEvent.activeEventId(), eventState.dbId);
+    }
+
+    processLog.services().crud().update().values(processLogBuilder.build()).execute();
+    activeEvent.services().crud().delete().by(activeEventBuilder.build()).execute();
+
+  }
+
   /**
-   * Save the result of the event process. It can be successful or failed.
+   * Save the result of the event process. It can be successful or failed. This function can be
+   * called in the {@link #executeProcessEvent(BusinessEventData, BusinessEventState)} to save the
+   * result even if it's successful or failed.
    * 
    * @param event The event itself.
    * @param currentState The current state of the event. Contains the database identifier.
    * @param ex If an exception occurred while processing the event. In this case the result depends
    *        on the value of the nextProcessTime
-   * @param nextProcessTime If there is any chance to try again the event process later then this
-   *        parameter marks the time. If null then there won't be next process and the active event
-   *        will be moved to the process event.
+   * @param nextProcessTime The process event instance that was the function of the execution..
    * @return
    * @throws Exception
    */
@@ -460,13 +601,14 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public BusinessEventState saveEventProcessFinished(BusinessEventState currentState,
       Exception ex,
-      LocalDateTime nextProcessTime)
+      ProcessEvent processEvent)
       throws Exception {
     LocalDateTime now = timeService.getSystemTime();
 
-
     BusinessEventStateEnum nextState =
         ex == null ? BusinessEventStateEnum.S : BusinessEventStateEnum.F;
+
+    currentState.state = nextState;
 
     Long resultId = null;
     if (ex != null) {
@@ -474,7 +616,8 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     } else if (currentState.result != null) {
       resultId = createBinaryContent(currentState.result);
     }
-    
+
+    // The previous execution must be finished even if the process failed or we need to reschedule.
     processLog.services().crud().update()
         .values(TableDatas.builder(processLog).addRow()
             .set(processLog.processFinishTime(), now)
@@ -484,29 +627,23 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
             .set(processLog.eventProcessLogId(), currentState.processId).build())
         .execute();
 
-    if (ex == null || (ex != null && nextProcessTime == null)) {
-      // If we were succeeded or we had an exception and we doesn't have the chance for the next
-      // process then we delete the active event record.
-      TableData<ActiveEventDef> tdActive = TableDatas.builder(activeEvent).addRow()
-          .set(activeEvent.activeEventId(), currentState.dbId)
-          .build();
-      activeEvent.services().crud().delete().by(tdActive).execute();
-    } else {
-      // In this case the active event will be allocable with the next process time we have. If it's
-      // far away then it's OK but we should consider the near future to keep in memory.
-      // TODO When we have the scheduling tool set we must use it for the in-memory scheduling.
-      nextState = BusinessEventStateEnum.A;
-      TableData<ActiveEventDef> tdActive = TableDatas.builder(activeEvent).addRow()
-          .set(activeEvent.activeEventId(), currentState.dbId)
-          .set(activeEvent.state(), nextState.name())
-          .set(activeEvent.applicationruntimeId(), null)
-          .set(activeEvent.nextProcessTime(), nextProcessTime)
-          .build();
-      activeEvent.services().crud().update().values(tdActive).execute();
+    // Before running the post section that could contains reschedule we must set the rescheduled to
+    // false.
+    currentState.rescheduled = false;
+
+    // Now we execute the post section that was added to the process event itself. It's typically
+    // the reschedule or posting of new events.
+    if (processEvent.getPostSection() != null) {
+      processEvent.getPostSection().execute();
     }
 
-    // Set the current state.
-    currentState.state = nextState;
+    // We must take a look at the state. If the post section used the active event for rescheduling
+    // for example. In these cases we let the active event record. Else we need to delete it.
+    if (!currentState.rescheduled) {
+      activeEvent.services().crud().delete().by(TableDatas.builder(activeEvent).addRow()
+          .set(activeEvent.activeEventId(), currentState.dbId)
+          .build()).execute();
+    }
 
     return currentState;
   }
@@ -616,6 +753,8 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
           executeProcessEvent(event, state);
         } catch (Exception e) {
           log.warn("Exception occured while executing the " + event + " event.", e);
+        } finally {
+          removeActiveEvent(state.dbId);
         }
       }
     });
@@ -653,16 +792,19 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
   private final void executeProcessEvent(BusinessEventData event,
       BusinessEventState startingState) throws Exception {
     BusinessEventState eventProcessStartedState = startingState;
+    ProcessEvent processEvent = null;
     try {
       eventProcessStartedState = self.saveEventProcessStarted(startingState);
-      ProcessEvent processEvent = processService.process().event(event);
+      processEvent = processService.process().event(event);
+      processEvent.channel(self);
+      processEvent.eventState(eventProcessStartedState);
       processEvent.execute();
-      
+
       // If the event has Bindary Data result, then use it in the BusinessEventState
       eventProcessStartedState.result = processEvent.output();
       // If we successfully processed the event then we save the result.
       try {
-        self.saveEventProcessFinished(eventProcessStartedState, null, null);
+        self.saveEventProcessFinished(eventProcessStartedState, null, processEvent);
       } catch (Exception ex) {
         // TODO Unable to save the result of the execution! The given channel must stop to avoid
         // duplications!!
@@ -671,7 +813,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
       }
     } catch (Exception e) {
       try {
-        self.saveEventProcessFinished(eventProcessStartedState, e, null);
+        self.saveEventProcessFinished(eventProcessStartedState, e, processEvent);
       } catch (Exception ex) {
         // TODO Unable to save the result of the execution! The given channel must stop to avoid
         // duplications!!
@@ -802,6 +944,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
         activeEvent.services().crud().query().all().select(activeEvent.eventbody().allProperties())
             .select(activeEvent.eventbody().request().lobData())
             .where(activeEvent.applicationruntime().lastTouchTime().lt(aliveLimitTime)
+                .OR(activeEvent.state().eq(BusinessEventStateEnum.A.name())).BRACKET()
                 .AND(activeEvent.nextProcessTime().lt(lookAheadLimit))
                 .AND(activeEvent.eventChannel().eq(channelCode)))
             .order(activeEvent.nextProcessTime().asc())
@@ -821,6 +964,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
 
       // The business events about to start execution
       List<BusinessEventState> startedEventStates = new ArrayList<>();
+      List<BusinessEventState> failedSyncEventStates = new ArrayList<>();
 
       for (DataRow row : result.rows()) {
         // TODO RuleBasedConversion
@@ -831,12 +975,11 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
           case SYNCHRONOUS:
             // Save the failed execution. We assume that the process failed because of the shutdown
             // of the server. We won't process the message again.
-            self.saveEventProcessFinished(eventState,
-                reSyncFailed, null);
+            failedSyncEventStates.add(eventState);
             break;
           case ASYNCHRONOUS:
             // Drop into the execution.
-            eventState.numberOfFailedProcesses++;
+            eventState.previousExecutions++;
             startedEventStates.add(eventState);
             break;
 
@@ -845,6 +988,10 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
         }
       }
 
+      // In one transaction it will save the failure for the sync channel events.
+      if (!failedSyncEventStates.isEmpty()) {
+        self.saveEventSyncProcessFailed(failedSyncEventStates);
+      }
       // Start the execution if we have any event to deal with.
       if (!startedEventStates.isEmpty()) {
         self.saveEventsAllocated(startedEventStates);
@@ -899,7 +1046,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     }
   }
 
-  private final void removeActiveEvent(Long id) {
+  final void removeActiveEvent(Long id) {
     lActiveEvents.lock();
     try {
       activeEvents.remove(id);

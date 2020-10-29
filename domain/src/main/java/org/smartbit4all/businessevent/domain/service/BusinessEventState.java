@@ -25,9 +25,10 @@ public class BusinessEventState {
   public BusinessEventStateEnum state;
 
   /**
-   * The number of failed processes up till now.
+   * The number of previous execution. The current execution is not counted. So in the first
+   * ProcessEvent it's 0.
    */
-  public Long numberOfFailedProcesses = 0l;
+  public Long previousExecutions = 0l;
 
   /**
    * The expected next process time for the event.
@@ -43,19 +44,23 @@ public class BusinessEventState {
    * On the API it could be useful to have the data reference. It can be null!
    */
   public transient BusinessEventData eventData;
-  
+
   /**
-   * The result of the event execution. It can be null if there is no result or we don't want to user the result outside of the event.
+   * The result of the event execution. It can be null if there is no result or we don't want to
+   * user the result outside of the event.
    */
   public BinaryData result;
+
+  public boolean rescheduled = false;
 
   public static BusinessEventState of(BusinessEventState other) {
     BusinessEventState result = new BusinessEventState();
     result.dbId = other.dbId;
     result.identifier = other.identifier;
     result.state = other.state;
-    result.numberOfFailedProcesses = other.numberOfFailedProcesses;
+    result.previousExecutions = other.previousExecutions;
     result.processId = other.processId;
+    result.nextProcessTime = other.nextProcessTime;
     return result;
   }
 

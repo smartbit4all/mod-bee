@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import org.smartbit4all.businessevent.domain.service.BusinessEventChannel.ChannelType;
 import org.smartbit4all.core.SB4FunctionImpl;
 import org.smartbit4all.domain.application.TimeManagementService;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 class PostEventImpl extends SB4FunctionImpl<BusinessEventData, BusinessEventState>
     implements PostEvent {

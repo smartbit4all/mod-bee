@@ -183,6 +183,18 @@ public interface BusinessEventChannel {
       LocalDateTime nextProcessTime) throws Exception;
 
   /**
+   * The reschedule means that we already have an event that must be scheduled again.
+   * 
+   * @param event The event that already exists
+   * @param schedule The timing of the next execution
+   * @return The updated event state
+   * @throws Exception
+   */
+  BusinessEventState saveEventProcessReschedule(BusinessEventData event,
+      BusinessEventState currentState,
+      BusinessEventSchedule schedule) throws Exception;
+
+  /**
    * This application runtime starts the execution of the event. This function allocates the given
    * record to avoid duplicated process. Set the application runtime for this record.
    * 
@@ -219,7 +231,16 @@ public interface BusinessEventChannel {
    */
   BusinessEventState saveEventProcessFinished(BusinessEventState currentState,
       Exception ex,
-      LocalDateTime nextProcessTime)
+      ProcessEvent processEvent)
+      throws Exception;
+
+  /**
+   * Save the fact that the given sync events have been failed.
+   * 
+   * @param failedEvents The sync events failed.
+   * @throws Exception
+   */
+  void saveEventSyncProcessFailed(List<BusinessEventState> failedStates)
       throws Exception;
 
   /**
@@ -262,8 +283,20 @@ public interface BusinessEventChannel {
    */
   void maintain();
 
+  /**
+   * Returns the channel type that can be {@link ChannelType#SYNCHRONOUS} or
+   * {@link ChannelType#ASYNCHRONOUS}.
+   * 
+   * @return
+   */
   ChannelType getType();
 
+  /**
+   * Set the channel type that can be {@link ChannelType#SYNCHRONOUS} or
+   * {@link ChannelType#ASYNCHRONOUS}.
+   * 
+   * @param type
+   */
   void setType(ChannelType type);
 
 }

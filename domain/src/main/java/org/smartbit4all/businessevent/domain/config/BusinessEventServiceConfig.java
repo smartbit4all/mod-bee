@@ -11,11 +11,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 @Import(MetaConfiguration.class)
 @Configuration
 @EnableScheduling
-public class BusinessEventServiceConfig extends SB4Configuration {
+public class BusinessEventServiceConfig extends SB4Configuration implements SchedulingConfigurer {
 
   @Bean(destroyMethod = "onDestroy")
   public BusinessEventService businessEventService() {
@@ -30,6 +33,19 @@ public class BusinessEventServiceConfig extends SB4Configuration {
   @Bean
   public ApplicationRuntimeService runtimeService() {
     return new ApplicationRuntimeServiceImpl();
+  }
+
+  @Override
+  public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+    taskRegistrar.setTaskScheduler(scheduler());
+  }
+
+  @Bean
+  public ThreadPoolTaskScheduler scheduler() {
+    ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+    taskScheduler.setPoolSize(3);
+    taskScheduler.setThreadNamePrefix("bee-maintain-thread-");
+    return taskScheduler;
   }
 
   // @Bean
