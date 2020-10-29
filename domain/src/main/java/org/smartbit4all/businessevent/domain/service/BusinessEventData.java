@@ -1,7 +1,7 @@
 package org.smartbit4all.businessevent.domain.service;
 
 import java.time.LocalDateTime;
-import org.smartbit4all.core.utility.BinaryData;
+import org.smartbit4all.types.binarydata.BinaryData;
 
 /**
  * A new business event.

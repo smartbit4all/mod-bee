@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import org.smartbit4all.businessevent.domain.entity.ActiveEventDef;
 import org.smartbit4all.businessevent.domain.entity.EventBodyDef;
-import org.smartbit4all.core.utility.BinaryData;
+import org.smartbit4all.types.binarydata.BinaryData;
 
 public class BusinessEventState {
 

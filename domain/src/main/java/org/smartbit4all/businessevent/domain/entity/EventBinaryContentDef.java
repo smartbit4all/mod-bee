@@ -1,6 +1,5 @@
 package org.smartbit4all.businessevent.domain.entity;
 
-import org.smartbit4all.core.utility.BinaryData;
 import org.smartbit4all.domain.annotation.property.Entity;
 import org.smartbit4all.domain.annotation.property.Id;
 import org.smartbit4all.domain.annotation.property.OwnProperty;
@@ -8,6 +7,7 @@ import org.smartbit4all.domain.annotation.property.Table;
 import org.smartbit4all.domain.meta.EntityDefinition;
 import org.smartbit4all.domain.meta.EntityService;
 import org.smartbit4all.domain.meta.Property;
+import org.smartbit4all.types.binarydata.BinaryData;
 
 @Entity(EventBinaryContentDef.ENTITY_NAME)
 @Table(EventBinaryContentDef.TABLE_NAME)
