@@ -284,10 +284,18 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     UUID identifier = UUID.randomUUID();
 
     LocalDateTime now = timeService.getSystemTime();
+    
     // if nextProcessTime is not specified, start processing now
     if (nextProcessTime == null) {
       nextProcessTime = now;
     }
+    
+    // Event creation time can be parametrized, but by default, it is the eventbody creation time
+    LocalDateTime createdAt = event.createdAt;
+    if(createdAt == null) {
+      createdAt = now;
+    }
+    
     // The event data is always created it doesn't matter what is the state.
     Long bodyId = getNextEventId();
     TableData<EventBodyDef> tdBody = TableDatas.builder(eventBody).addRow()
@@ -296,7 +304,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
         .set(eventBody.actionCode(), event.actionCode)
         .set(eventBody.businessEntity(), event.businessEntity)
         .set(eventBody.businessEntityRef(), event.businessEntityRef)
-        .set(eventBody.createdAt(), now)
+        .set(eventBody.createdAt(), createdAt)
         .set(eventBody.eventChannel(), getChannelCode())
         .set(eventBody.extensionText(), event.extensionText)
         .setNotNull(eventBody.requestId(),

@@ -9,7 +9,14 @@ import org.smartbit4all.types.binarydata.BinaryData;
  * @author Peter Boros
  */
 public class BusinessEventData {
-
+  
+  /**
+   * Not manadatory!
+   * 
+   * If createdAt field is empty, the actual time will be added, when the business event is created. 
+   */
+  public LocalDateTime createdAt;
+  
   /**
    * The channel for the execution. A channel is a setup node for the execution.
    */
@@ -50,7 +57,7 @@ public class BusinessEventData {
    * The request for the Business Event. It can be null.
    */
   public BinaryData request;
-
+  
   @Override
   public String toString() {
     return "channel=" + channel + ", actionCode=" + actionCode + ", businessEntity="
