@@ -1,0 +1,59 @@
+openapi: 3.0.1
+info:
+  title: BEE statistics UI API
+  description: BEE statistics UI API
+  termsOfService: ''
+  contact:
+    email: info@it4all.hu
+  version: 1.0.0
+tags:
+  - name: BEE
+    description: Business Event Engine
+paths:
+  /nope:
+    post:
+      summary: Placeholder for generation
+      responses:
+        '200':
+          description: nope
+components:
+  schemas:
+    EventChannelStatData:
+      type: object
+      properties:
+        channelCode:
+          type: string
+        channelName:
+          type: string
+        noOfSuccess:
+          type: integer
+          format: int64
+          default: 0
+        noOfFail:
+          type: integer
+          format: int64
+          default: 0
+        averageProcessTime:
+          type: integer
+          format: int64
+    EventTypeStatData:
+      type: object
+      properties:
+        eventCode:
+          type: string
+        eventName:
+          type: string
+        noOfEvents:
+          type: integer
+          format: int64
+    EventChannelActualProcessStatData:
+      type: object
+      properties:
+        channelCode:
+          type: string
+        channelName:
+          type: string
+        eventData:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventTypeStatData'

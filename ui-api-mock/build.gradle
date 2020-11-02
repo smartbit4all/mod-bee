@@ -1,0 +1,7 @@
+
+dependencies {
+	api project(':bee-ui-api')
+    api 'org.springframework:spring-context:5.2.3.RELEASE'
+	
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+}

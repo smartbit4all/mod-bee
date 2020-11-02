@@ -22,9 +22,9 @@ sourceSets {
 
 openApiGenerate {
     generatorName = "spring"
-    inputSpec = "$rootDir/ui-api/src/main/resources/descriptor/folderApi.yaml".toString()
+    inputSpec = "$rootDir/ui-api/src/main/resources/descriptor/statisticsApi.yaml".toString()
     outputDir = "${projectDir}/${srcGenMainJava}"
-    modelPackage = "org.smartbit4all.docu.api.model"
+    modelPackage = "org.smartbit4all.bee.api.model"
     systemProperties = [
     	models: "", // with this only the model files (the beans) will be generated
     	//apis: ""

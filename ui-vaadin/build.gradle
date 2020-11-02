@@ -1,11 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.6.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-    id 'war'
-	id 'com.vaadin' version '0.7.0'
 }
-
-defaultTasks("clean", "vaadinBuildFrontend", "build")
 
 sourceCompatibility = '1.8'
 
@@ -17,12 +12,7 @@ repositories {
 }
 
 ext {
-	set('vaadinVersion', "14.3.3")
-}
-
-vaadin {
-  pnpmEnable = true
-  productionMode = false
+	set('vaadinVersion', "14.4.1")
 }
 
 configurations {
@@ -33,39 +23,23 @@ configurations {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'com.vaadin:vaadin-charts-flow'
 	implementation 'com.vaadin:vaadin-board-flow'
-	implementation('com.vaadin:vaadin-spring-boot-starter') {
-//         Webjars are only needed when running in Vaadin 13 compatibility mode
-		["com.vaadin.webjar", "org.webjars.bowergithub.insites",
-		 "org.webjars.bowergithub.polymer", "org.webjars.bowergithub.polymerelements",
-		 "org.webjars.bowergithub.vaadin", "org.webjars.bowergithub.webcomponents"]
-				.forEach { group -> exclude(group: group) }
-	}
+//	runtimeOnly 'com.oracle.database.jdbc:ojdbc8:12.2.0.1'
+//	runtimeOnly 'com.h2database:h2'
 	
-	runtimeOnly 'com.oracle.database.jdbc:ojdbc8:12.2.0.1'
-	runtimeOnly 'com.h2database:h2'
+	api project(':bee-ui-common')
+	implementation 'org.smartbit4all.platform:ui-vaadin'
+//	api 'org.smartbit4all.platform:sql'
+//	api 'org.smartbit4all.platform:json'
 	
-	api 'org.smartbit4all.platform:ui-vaadin'
-	api 'org.smartbit4all.platform:sql'
-	api 'org.smartbit4all.platform:json'
-	
-	implementation project(':bee-domain')
 
 	implementation 'dev.mett.vaadin:tooltip:1.5.0-alpha'
 	implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.guava:guava:28.1-jre'
 	
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
-	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.vaadin:vaadin-testbench'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.1'
 }
 
 dependencyManagement {
@@ -77,30 +51,3 @@ dependencyManagement {
 test {
 	useJUnitPlatform()
 }
-
-// default profile
-def profiles = "dev"
-if (project.hasProperty("mock")) {
-    profiles = "mock"
-    apply from: "gradle/profile_mock.gradle"
-}
-if (project.hasProperty("uat")) {
-    profiles = "uat"
-    apply from: "gradle/profile_uat.gradle"
-}
-if (project.hasProperty("prod")) {
-    profiles = "prod"
-    apply from: "gradle/profile_prod.gradle"
-}
-
-
-processResources {
-    //inputs.property('springProfiles', profiles)
-    filesMatching("**/application.yml") {
-        filter {
-            it.replace("#spring.profiles.active#", profiles)
-        }
-    }
-}
-
-bootJar.dependsOn processResources

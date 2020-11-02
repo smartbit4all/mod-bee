@@ -2,10 +2,10 @@ package org.smartbit4all.businessevent.ui.views.statistics;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.smartbit4all.businessevent.ui.entities.EventChannelActualProcessStatData;
-import org.smartbit4all.businessevent.ui.entities.EventChannelStatData;
-import org.smartbit4all.businessevent.ui.service.StatDataService;
-import org.smartbit4all.businessevent.ui.views.MainLayoutImpl;
+import org.smartbit4all.bee.api.StatDataService;
+import org.smartbit4all.bee.api.model.EventChannelActualProcessStatData;
+import org.smartbit4all.bee.api.model.EventChannelStatData;
+import org.smartbit4all.bee.api.model.EventTypeStatData;
 import org.smartbit4all.ui.vaadin.components.FlexBoxLayout;
 import org.smartbit4all.ui.vaadin.util.LumoStyles;
 import org.smartbit4all.ui.vaadin.util.UIUtils;
@@ -24,12 +24,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
 
 @CssImport("./bee/styles/views/dashboard.css")
-@PageTitle("DashBoard")
-@Route(value = "", layout = MainLayoutImpl.class)
 public class DashBoard extends ViewFrame {
 
   private StatDataService statDataService;
@@ -296,7 +292,12 @@ public class DashBoard extends ViewFrame {
         messageTypes.add(button);
       }
       messageTypeLayout.add(messageTypes);
-      noOfMessagesLayout.add(new Label(eventChannelActualProcess.getNoOfAllEvents() + " db"));
+      long noOfMessages = 0;
+      for (EventTypeStatData data : eventChannelActualProcess.getEventData()) {
+        noOfMessages += data.getNoOfEvents();
+      }
+
+      noOfMessagesLayout.add(new Label(noOfMessages + " db"));
     }
 
     FlexBoxLayout actualProcessStatLayout =
