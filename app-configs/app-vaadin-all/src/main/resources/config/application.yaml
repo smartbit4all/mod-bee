@@ -1,0 +1,16 @@
+
+spring:
+  application:
+    name: bee-ui
+  profiles:
+    active: dev
+#    active: #spring.profiles.active#
+  main:
+    allow-bean-definition-overriding: true
+
+vaadin:
+  compatibilityMode: false
+
+server:
+  port: 9070
+

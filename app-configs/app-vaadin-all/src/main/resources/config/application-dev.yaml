@@ -1,0 +1,29 @@
+
+logging:
+  level:
+    ROOT: INFO
+    org.smartbit4all.businessevent: DEBUG
+
+spring:
+  profiles:
+    active: dev
+  devtools:
+    restart:
+      enabled: true
+  jackson:
+    serialization:
+      indent-output: true
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/orcl
+    username: BUSINESSEVENT
+    password: BUSINESSEVENT
+    sqlScriptEncoding: UTF-8
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle12cDialect
+        hbm2ddl:
+          auto: none
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
