@@ -47,14 +47,14 @@ public interface ProcessEvent extends SB4Function<BusinessEventData, BinaryData>
    * @param channel The channel the process running in. It's the context for the process.
    * @return
    */
-  ProcessEvent channel(BusinessEventChannel channel);
+  ProcessEvent channel(BusinessEventChannelService channel);
 
   /**
    * We can access the
    * 
    * @return
    */
-  BusinessEventChannel getChannel();
+  BusinessEventChannelService getChannel();
 
   BusinessEventState getEventState();
 

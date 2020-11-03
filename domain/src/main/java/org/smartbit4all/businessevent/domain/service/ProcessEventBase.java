@@ -11,7 +11,7 @@ import org.smartbit4all.types.binarydata.BinaryData;
 public abstract class ProcessEventBase extends SB4FunctionImpl<BusinessEventData, BinaryData>
     implements ProcessEvent {
 
-  private BusinessEventChannel channel;
+  private BusinessEventChannelService channel;
 
   private BusinessEventState eventState;
 
@@ -29,13 +29,13 @@ public abstract class ProcessEventBase extends SB4FunctionImpl<BusinessEventData
   }
 
   @Override
-  public ProcessEvent channel(BusinessEventChannel channel) {
+  public ProcessEvent channel(BusinessEventChannelService channel) {
     this.channel = channel;
     return this;
   }
 
   @Override
-  public BusinessEventChannel getChannel() {
+  public BusinessEventChannelService getChannel() {
     return channel;
   }
 

@@ -33,6 +33,7 @@ import org.smartbit4all.domain.data.TableDatas;
 import org.smartbit4all.domain.data.TableDatas.BuilderWithFlexibleProperties;
 import org.smartbit4all.domain.meta.EntityService;
 import org.smartbit4all.domain.service.query.Query;
+import org.smartbit4all.domain.utility.crud.Crud;
 import org.smartbit4all.types.binarydata.BinaryData;
 import org.smartbit4all.types.binarydata.BinaryDataOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ import org.springframework.util.MimeTypeUtils;
  * 
  * @author Peter Boros
  */
-public class BusinessEventChannelImpl implements BusinessEventChannel {
+public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessEventChannelService {
 
   private static final Logger log = LoggerFactory.getLogger(BusinessEventChannelImpl.class);
 
@@ -62,10 +63,10 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
   /**
    * The this as the interface Proxy! Use this instead of calling the methods directly.
    */
-  private BusinessEventChannel self;
+  private BusinessEventChannelService self;
 
   @Override
-  public void setSelf(BusinessEventChannel self) {
+  public void setSelf(BusinessEventChannelService self) {
     this.self = self;
   }
 
@@ -728,6 +729,20 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
     return currentState;
   }
 
+  @Override
+  public void registerScheduledFunction(ScheduledFunction<?, ?> scheduledFunction)
+      throws Exception {
+    // First we must find the given record and lock it if we already have.
+    TableData<EventBodyDef> tdEventBody = Crud.read(eventBody).select(eventBody.eventBodyId())
+        .where(eventBody.identifier().eq(scheduledFunction.getClass().getName())).lock()
+        .executeIntoTableData();
+    if (tdEventBody.isEmpty()) {
+      // In this case we have to post the given event. The kind of the event will ensure the
+      // rescheduling always.
+
+    }
+  }
+
   /**
    * The execution of the event processing in the current thread.
    * 
@@ -960,15 +975,6 @@ public class BusinessEventChannelImpl implements BusinessEventChannel {
 
     try {
       query.execute();
-
-      // List<BusinessEventState> list =
-      // activeEvent.services().crud().query().select(BusinessEventState.class)
-      // .where(activeEvent.applicationruntime().lastTouchTime().lt(aliveLimitTime)
-      // .AND(activeEvent.nextProcessTime().lt(lookAheadLimit))
-      // .AND(activeEvent.eventChannel().eq(channelCode)))
-      // .order(activeEvent.nextProcessTime().asc())
-      // .limit(allocationLimit).list(BusinessEventState.class);
-
 
       // The business events about to start execution
       List<BusinessEventState> startedEventStates = new ArrayList<>();

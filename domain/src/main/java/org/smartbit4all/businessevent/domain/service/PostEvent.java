@@ -20,4 +20,6 @@ public interface PostEvent extends SB4Function<BusinessEventData, BusinessEventS
 
   PostEvent event(BusinessEventData event);
 
+  PostEvent function(SB4Function<?, ?> function);
+
 }

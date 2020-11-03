@@ -1,7 +1,5 @@
 package org.smartbit4all.businessevent.domain.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public interface BusinessEventChannel {
@@ -113,175 +111,40 @@ public interface BusinessEventChannel {
   ChannelOperationMode getMode();
 
   /**
-   * @see ChannelOperationMode
-   * @param mode
-   */
-  void setMode(ChannelOperationMode mode);
-
-  /**
    * {@link ChannelState}
    * 
    * @return
    */
   ChannelState getState();
 
-  PostEvent post();
-
-  void start();
-
-  void stop();
-
   /**
-   * The service that provide the {@link ProcessEvent} function for the channel.
+   * This is the user API of the business channel. The post returns a function that must be executed
+   * later on. This is a builder that allows to setup the function before calling the execute. The
+   * post itself is issue a new event instance based on the {@link BusinessEventData} as input
+   * parameter. The event is executed one and only one time except if we call the
+   * {@link ProcessEvent#reschedule()} during the execution. If the event execution finished with
+   * exception then it's executed again if and only if we called the reschedule! So the exception
+   * does't mean necessarily to reschedule the execution and to call reschedule there is no need to
+   * throw an exception! The channel could be:
+   * <ul>
+   * <li>{@link ChannelType#SYNCHRONOUS} - In this case the given event is executed on the current
+   * thread. The fact of the execution is saved for the given channel so we can examine the event
+   * registry as an audit log. If the event process failed (even after several reschedule) no other
+   * server will catch this. It won't be executed by other servers!</li>
+   * <li>{@link ChannelType#ASYNCHRONOUS} - In this case the given event is executed on the
+   * execution thread. The asynchronous event could be executed on any server depending on the
+   * expected process time. If there was a failure (the process is not finished) during the
+   * execution then another serve will catch the given event and execute it as soon as possible.
+   * </li>
+   * </ul>
    * 
    * @return
    */
-  BusinessEventProcessService getProcessService();
-
-  /**
-   * The service that provide the {@link ProcessEvent} function for the channel.
-   * 
-   * @param processService
-   */
-  void setProcessService(BusinessEventProcessService processService);
+  PostEvent post();
 
   String getChannelCode();
 
-  void setChannelCode(String channelCode);
-
-  int getExecutionThreadLimit();
-
-  void setExecutionThreadLimit(int executionThreadLimit);
-
-  int getMaxEventQueueSize();
-
-  void setMaxEventQueueSize(int maxEventQueueSize);
-
-  int getNormalOperationLimit();
-
-  void setNormalOperationLimit(int normalOperationLimit);
-
-  int getAllocationLimit();
-
-  void setAllocationLimit(int allocationLimit);
-
   Long getRuntimeId();
-
-  /**
-   * Save the event into the active event store. TODO Transact together with the current transaction
-   * but start the execution itself by the successful commit!
-   * 
-   * @param event The event data that contains all the information we have about the event.
-   * @param state The state can define if we have an event to process later on by grabbing new event
-   *        mechanism. This is the {@link BusinessEventStateEnum#W} - waiting state. But if the
-   *        given node starts the execution immediately after the transaction then the state must be
-   *        {@link BusinessEventStateEnum#E} - executing.
-   * @return
-   * @throws Exception
-   */
-  BusinessEventState saveNewEvent(BusinessEventData event, BusinessEventStateEnum state,
-      LocalDateTime nextProcessTime) throws Exception;
-
-  /**
-   * The reschedule means that we already have an event that must be scheduled again.
-   * 
-   * @param event The event that already exists
-   * @param schedule The timing of the next execution
-   * @return The updated event state
-   * @throws Exception
-   */
-  BusinessEventState saveEventProcessReschedule(BusinessEventData event,
-      BusinessEventState currentState,
-      BusinessEventSchedule schedule) throws Exception;
-
-  /**
-   * This application runtime starts the execution of the event. This function allocates the given
-   * record to avoid duplicated process. Set the application runtime for this record.
-   * 
-   * @param eventStates The list of events to allocate.
-   * @return The updated state.
-   * @throws Exception
-   */
-  void saveEventsAllocated(List<BusinessEventState> eventStates) throws Exception;
-
-  /**
-   * Save the fact that we start the processing of the given event. It's only an update on the state
-   * of the process log and the active event. At the same time we set the process start time for the
-   * process log. The start time will be the current time.
-   * 
-   * @param event The event itself.
-   * @return
-   * @throws Exception
-   */
-  BusinessEventState saveEventProcessStarted(BusinessEventState currentState)
-      throws Exception;
-
-  /**
-   * Save the result of the event process. It can be successful or failed.
-   * 
-   * @param event The event itself.
-   * @param currentState The current state of the event. Contains the database identifier.
-   * @param ex If an exception occurred while processing the event. In this case the result depends
-   *        on the value of the nextProcessTime
-   * @param nextProcessTime If there is any chance to try again the event process later then this
-   *        parameter marks the time. If null then there won't be next process and the active event
-   *        will be moved to the process event.
-   * @return
-   * @throws Exception
-   */
-  BusinessEventState saveEventProcessFinished(BusinessEventState currentState,
-      Exception ex,
-      ProcessEvent processEvent)
-      throws Exception;
-
-  /**
-   * Save the fact that the given sync events have been failed.
-   * 
-   * @param failedEvents The sync events failed.
-   * @throws Exception
-   */
-  void saveEventSyncProcessFailed(List<BusinessEventState> failedStates)
-      throws Exception;
-
-  /**
-   * The execution of the event processing in the current thread.
-   * 
-   * @throws Exception
-   */
-  void processSync(BusinessEventData event, BusinessEventState state) throws Exception;
-
-  /**
-   * The execution of the event processing in Executor thread pool.
-   * 
-   * @throws Exception
-   */
-  void processAsync(BusinessEventData event, BusinessEventState state);
-
-  /**
-   * The execution of the event scheduled for a given time. It submit this event into the scheduled
-   * executor service.
-   * 
-   * @throws Exception
-   */
-  void processSchedule(BusinessEventData event, BusinessEventState startingState);
-
-  /**
-   * TODO How to access the self interface?
-   * 
-   * @param self
-   */
-  void setSelf(BusinessEventChannel self);
-
-  /**
-   * The generic schedule function for the channel. The different channels have different
-   * implementation.
-   * <ul>
-   * <li>For the synchronous channel it is the cleanup for the lost events.</li>
-   * <li>For the asynchronous channel it is the catch for the lost events.</li>
-   * <li>For the scheduled channel it is the cleanup for the lost events.</li>
-   * </ul>
-   */
-  void maintain();
 
   /**
    * Returns the channel type that can be {@link ChannelType#SYNCHRONOUS} or
@@ -290,13 +153,5 @@ public interface BusinessEventChannel {
    * @return
    */
   ChannelType getType();
-
-  /**
-   * Set the channel type that can be {@link ChannelType#SYNCHRONOUS} or
-   * {@link ChannelType#ASYNCHRONOUS}.
-   * 
-   * @param type
-   */
-  void setType(ChannelType type);
 
 }

@@ -2,16 +2,19 @@ package org.smartbit4all.businessevent.domain.service;
 
 import java.time.LocalDateTime;
 import org.smartbit4all.businessevent.domain.service.BusinessEventChannel.ChannelType;
+import org.smartbit4all.core.SB4Function;
 import org.smartbit4all.core.SB4FunctionImpl;
 import org.smartbit4all.domain.application.TimeManagementService;
 
 class PostEventImpl extends SB4FunctionImpl<BusinessEventData, BusinessEventState>
     implements PostEvent {
 
-  private BusinessEventChannel channel;
+  private BusinessEventChannelService channel;
   private TimeManagementService timeService;
 
-  public PostEventImpl(BusinessEventChannel channel, TimeManagementService timeService) {
+  private SB4Function<?, ?> function;
+
+  public PostEventImpl(BusinessEventChannelService channel, TimeManagementService timeService) {
     super();
     this.channel = channel;
     this.timeService = timeService;
@@ -45,6 +48,18 @@ class PostEventImpl extends SB4FunctionImpl<BusinessEventData, BusinessEventStat
   public PostEvent event(BusinessEventData event) {
     setInput(event);
     return this;
+  }
+
+  @Override
+  public PostEvent function(SB4Function<?, ?> function) {
+    this.function = function;
+    // We construct the BusinessEventData for the function. We will be able to serialize/deserialize
+    // them.
+    BusinessEventData eventData = new BusinessEventData();
+    eventData.actionCode = function.getClass().getName();
+    eventData.channel = channel.getChannelCode();
+    eventData.businessEntity = "FUNCTION";
+    return event(eventData);
   }
 
 }

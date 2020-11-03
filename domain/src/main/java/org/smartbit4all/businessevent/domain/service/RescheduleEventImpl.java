@@ -19,7 +19,7 @@ public class RescheduleEventImpl extends SB4FunctionImpl<BusinessEventSchedule, 
 
   @Override
   public void execute() throws Exception {
-    BusinessEventChannel channel = originalEventProcess.getChannel();
+    BusinessEventChannelService channel = originalEventProcess.getChannel();
     BusinessEventData eventData = originalEventProcess.input();
     BusinessEventState eventStateRescheduled =
         channel.saveEventProcessReschedule(eventData,
