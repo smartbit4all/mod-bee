@@ -237,7 +237,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
 
   @Autowired
   TimeManagementService timeService;
-
+  
   @Override
   public PostEvent post() {
     PostEventImpl impl = new PostEventImpl(self, timeService);
@@ -758,6 +758,12 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
     } finally {
       removeActiveEvent(state.dbId);
     }
+  }
+  
+  @Override
+  @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.NOT_SUPPORTED)
+  public void reprocessSync(BusinessEventData event, BusinessEventState state) throws Exception {
+    processSync(event, state);
   }
 
   /**

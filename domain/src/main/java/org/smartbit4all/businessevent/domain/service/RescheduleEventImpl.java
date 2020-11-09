@@ -36,7 +36,7 @@ public class RescheduleEventImpl extends SB4FunctionImpl<BusinessEventSchedule, 
         public void afterCommit() {
           if (channel.getType() == ChannelType.SYNCHRONOUS) {
             try {
-              channel.processSync(eventData,
+              channel.reprocessSync(eventData,
                   eventStateRescheduled);
             } catch (Exception e) {
               throw new RuntimeException(e);

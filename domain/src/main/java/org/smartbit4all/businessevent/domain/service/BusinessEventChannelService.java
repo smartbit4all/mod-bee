@@ -153,6 +153,13 @@ public interface BusinessEventChannelService {
    * @throws Exception
    */
   void processSync(BusinessEventData event, BusinessEventState state) throws Exception;
+  
+  /**
+   * The reexecution of the event processing in the current thread.
+   * 
+   * @throws Exception
+   */
+  void reprocessSync(BusinessEventData event, BusinessEventState state) throws Exception;
 
   /**
    * The execution of the event processing in Executor thread pool.
