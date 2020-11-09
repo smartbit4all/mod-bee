@@ -261,8 +261,31 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
 
   @Override
   public void stop() {
-    executorService.shutdownNow();
-    List<Runnable> list = scheduledExecutorService.shutdownNow();
+    try {
+      
+      if(executorService != null) {
+        executorService.shutdown();
+        executorService.awaitTermination(1, TimeUnit.SECONDS);
+        executorService.shutdownNow();
+      }
+      
+    } catch (Throwable e) {
+      log.error("ExecutorService awaitTermination interrupted", e);
+    }
+    
+    try {
+      
+      if(scheduledExecutorService != null) {
+        scheduledExecutorService.shutdown();
+        scheduledExecutorService.awaitTermination(1, TimeUnit.SECONDS);
+        
+        // TODO update active events on shutdown
+        List<Runnable> runables = scheduledExecutorService.shutdownNow();
+      }
+      
+    } catch (Throwable e) {
+      log.error("Scheduled ExecutorService awaitTermination interrupted");
+    }
   }
 
   /**

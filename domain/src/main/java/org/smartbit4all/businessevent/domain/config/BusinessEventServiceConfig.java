@@ -20,7 +20,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @EnableScheduling
 public class BusinessEventServiceConfig extends SB4Configuration implements SchedulingConfigurer {
 
-  @Bean(destroyMethod = "onDestroy")
+  @Bean
   public BusinessEventService businessEventService() {
     return new BusinessEventServiceImpl();
   }

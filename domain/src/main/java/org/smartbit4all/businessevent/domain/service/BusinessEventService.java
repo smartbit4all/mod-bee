@@ -19,10 +19,4 @@ public interface BusinessEventService extends SB4Service {
    */
   BusinessEventChannel channel(String name);
 
-  /**
-   * We must shutdown all the channels one by one. This must be a graceful shutdown to avoid loosing
-   * events. It's registered as a lifecycle function. Must shutdown all the channels before.
-   */
-  void onDestroy();
-
 }

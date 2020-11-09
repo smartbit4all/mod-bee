@@ -8,11 +8,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smartbit4all.businessevent.domain.service.BusinessEventChannel.ChannelType;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-public class BusinessEventServiceImpl implements BusinessEventService, InitializingBean {
+public class BusinessEventServiceImpl implements BusinessEventService, InitializingBean, DisposableBean {
 
   private static final Logger log = LoggerFactory.getLogger(BusinessEventServiceImpl.class);
 
@@ -63,13 +64,6 @@ public class BusinessEventServiceImpl implements BusinessEventService, Initializ
     return channel;
   }
 
-  @Override
-  public void onDestroy() {
-    for (BusinessEventChannelService channel : channelServices.values()) {
-      channel.stop();
-    }
-  }
-
   /**
    * Initializing the channels based on the autowired {@link #channelBeans}. And collection all the
    * {@link ScheduledFunction} we have and try to add them to the channels.
@@ -101,6 +95,17 @@ public class BusinessEventServiceImpl implements BusinessEventService, Initializ
           channelService.registerScheduledFunction(scheduledFunction);
         }
       }
+    }
+  }
+
+  /**
+   * We must shutdown all the channels one by one. This must be a graceful shutdown to avoid loosing
+   * events. It's registered as a lifecycle function. Must shutdown all the channels before.
+   */
+  @Override
+  public void destroy() throws Exception {
+    for (BusinessEventChannelService channel : channelServices.values()) {
+      channel.stop();
     }
   }
 

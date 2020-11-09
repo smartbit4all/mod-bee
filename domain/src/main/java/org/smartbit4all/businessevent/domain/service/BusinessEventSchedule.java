@@ -38,4 +38,8 @@ public class BusinessEventSchedule {
     return currentTime;
   }
 
+  public Duration getAfter() {
+    return after;
+  }
+
 }
