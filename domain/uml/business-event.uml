@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:SB4UMLProfile="http://www.smartbit4all.org/SB4UMLProfile" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ActionLanguage="http://www.omg.org/spec/ALF/20120827/ActionLanguage-Profile" xmlns:SB4UMLProfile="http://www.smartbit4all.org/SB4UMLProfile" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http://www.omg.org/spec/ALF/20120827/ActionLanguage-Profile pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#_Kv8EIKFXEeS_KNX0nfvIVQ">
   <uml:Model xmi:id="_wayBgKlPEeqNn4-jObTxuw" name="business-event">
     <packageImport xmi:type="uml:PackageImport" xmi:id="_wdhzgKlPEeqNn4-jObTxuw">
       <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
@@ -14,6 +14,9 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
         <ownedComment xmi:type="uml:Comment" xmi:id="_ncY08KrVEeqwasKhGu9goQ">
           <body>Az események adattartalma, amely a feldolgozás során csak az állapot mezőjében változik.</body>
         </ownedComment>
+        <ownedComment xmi:type="uml:Comment" xmi:id="_5o7wYC8YEeujtb2iEd0z0g">
+          <body>The event body contains all the static informatioln for the business events. The events during the active and the processed stage are referencing the body.</body>
+        </ownedComment>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_ER9O4arSEeqwasKhGu9goQ" name="request" type="_ESA5RqrSEeqwasKhGu9goQ" aggregation="composite" association="_ESA5SarSEeqwasKhGu9goQ">
           <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ER9O4qrSEeqwasKhGu9goQ"/>
         </ownedAttribute>
@@ -21,10 +24,18 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
           <ownedComment xmi:type="uml:Comment" xmi:id="_cozWkKrVEeqwasKhGu9goQ">
             <body>Esemény egyedi generált, külső rendszerekkel megosztható azonosítója.</body>
           </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_Yw8QkC8hEeujtb2iEd0z0g">
+            <body>The identifier is a unique identifier for the events.</body>
+          </ownedComment>
           <type xmi:type="uml:PrimitiveType" href="../../domain/uml/platform.uml#_W87uAKrXEeqwasKhGu9goQ"/>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_ER9O5KrSEeqwasKhGu9goQ" name="actionCode" type="_WmG5kN1EEeqdr_fSkdhASA">
-          <ownedComment xmi:type="uml:Comment" xmi:id="_I3M9AKvVEequ5bpLsm2zUg">
+          <ownedComment xmi:type="uml:Comment" xmi:id="_3qGrMC8jEeujtb2iEd0z0g">
+            <body>The action code is a type of the event. It contains the instruction for the event processor logic.&#xD;
+The platform use this to store the Function fully qualified name like Module.Enity1.CRUD.Query.&#xD;
+It is useful to identify the event at a glance but the same value will be stored in the binary content.</body>
+          </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_SFgroC8nEeujtb2iEd0z0g">
             <body>Az esemény műveletének a kódja.</body>
           </ownedComment>
         </ownedAttribute>
@@ -59,11 +70,17 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
           <ownedComment xmi:type="uml:Comment" xmi:id="_Sf1PQLEnEeqF9Zc6twRobA">
             <body>Az esemény session azonosítója. Egy esemény sorozatot tudunk ezzel összekapcsolni.</body>
           </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_Cl2AAC8kEeujtb2iEd0z0g">
+            <body>It's a correlation id for the events with the same business session. The processing logic can keep the order of the events from the same session.</body>
+          </ownedComment>
           <type xmi:type="uml:PrimitiveType" href="../../domain/uml/platform.uml#_VCEM4KsQEeqI-_Il1SnNWw"/>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_dL1uoMpEEeqppKLTAf4cUw" name="eventChannel">
           <ownedComment xmi:type="uml:Comment" xmi:id="_dL1uocpEEeqppKLTAf4cUw">
             <body>A csatorna kódja. Az üzenetek végrehajtási körülményeit csatornákra tudjuk állítani.</body>
+          </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_E11ssC8kEeujtb2iEd0z0g">
+            <body>The channel code defines the executor (the thread pool) for the given event. The priority of the channels could differ depending on the configuration.</body>
           </ownedComment>
           <type xmi:type="uml:PrimitiveType" href="../../domain/uml/platform.uml#_VCEM4KsQEeqI-_Il1SnNWw"/>
         </ownedAttribute>
@@ -81,6 +98,10 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
           <ownedComment xmi:type="uml:Comment" xmi:id="_mp8DALElEeqF9Zc6twRobA">
             <body>Következő feldolgozás esedékességének időpontja.</body>
           </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_QhBhcC8kEeujtb2iEd0z0g">
+            <body>The next process time is an instruction for the scheduled workers to allocate the given event for execution.&#xD;
+The default value is the current time. If we have a scheduled event then this property contains the next schedule time.</body>
+          </ownedComment>
           <type xmi:type="uml:PrimitiveType" href="../../domain/uml/platform.uml#_PZGJIKrXEeqwasKhGu9goQ"/>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_RHupEud7EeqaQ4LPIbrCUQ" name="applicationruntime" type="_z9T0QKuYEequ5bpLsm2zUg" association="_RHuCAOd7EeqaQ4LPIbrCUQ">
@@ -91,11 +112,17 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
           <ownedComment xmi:type="uml:Comment" xmi:id="_V3Y2Ied7EeqaQ4LPIbrCUQ">
             <body>A csatorna kódja. Az üzenetek végrehajtási körülményeit csatornákra tudjuk állítani.</body>
           </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_o_UcUC8kEeujtb2iEd0z0g">
+            <body>The channel code defines the executor (the thread pool) for the given event. The priority of the channels could differ depending on the configuration.</body>
+          </ownedComment>
           <type xmi:type="uml:PrimitiveType" href="../../domain/uml/platform.uml#_VCEM4KsQEeqI-_Il1SnNWw"/>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_Xhj48Od7EeqaQ4LPIbrCUQ" name="state" type="_UBX-4MwgEeq4CtjEciXs2w">
           <ownedComment xmi:type="uml:Comment" xmi:id="_Xhj48ed7EeqaQ4LPIbrCUQ">
             <body>ActiveEvent állapota.</body>
+          </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_nTB5oC8kEeujtb2iEd0z0g">
+            <body>The state can be one of the following:</body>
           </ownedComment>
         </ownedAttribute>
       </packagedElement>
@@ -174,10 +201,16 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
           <ownedComment xmi:type="uml:Comment" xmi:id="_f7RgsLEnEeqF9Zc6twRobA">
             <body>A feldolgozás állapota.</body>
           </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_BoYcwC8lEeujtb2iEd0z0g">
+            <body>The state can be one of the following:</body>
+          </ownedComment>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_SdSHALEmEeqF9Zc6twRobA" name="orderNo" type="_K50DEKvXEequ5bpLsm2zUg">
           <ownedComment xmi:type="uml:Comment" xmi:id="_jyDacLEmEeqF9Zc6twRobA">
             <body>A feldolgozás sorszáma az adott eseményre vonatkozóan ez 1-ről indul és egyesével növekszik.</body>
+          </ownedComment>
+          <ownedComment xmi:type="uml:Comment" xmi:id="_EWNU8C8lEeujtb2iEd0z0g">
+            <body>The default is 0 and increased by every process of the event. If we start the process on the fly, then we set 1.</body>
           </ownedComment>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_1jMdYOd3EeqaQ4LPIbrCUQ" name="allocationTime" visibility="public">
@@ -208,6 +241,9 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
       <packagedElement xmi:type="uml:Interface" xmi:id="_z9T0QKuYEequ5bpLsm2zUg" name="ApplicationRuntime">
         <ownedComment xmi:type="uml:Comment" xmi:id="_R5Tt8KuZEequ5bpLsm2zUg">
           <body>Az elinduló szerverek minden esetben pontosan egy ilyen rekordot hoznak létre. Ez tartalmazza az indulás időpontját és graceful shutdown esetén a leállításét is. Amíg egy szerver fut, addig folyamatosan ~5 másodpercenként frissíti a lastTouchTime-ot. Így az adatbázsi szintjén látható, hogy melyik szerver fut.</body>
+        </ownedComment>
+        <ownedComment xmi:type="uml:Comment" xmi:id="_J1SMwC8lEeujtb2iEd0z0g">
+          <body>The application runtime is responsible for storing one record for each application instance. In a clustered environment these instances can communicate with each other and the still alive listening is solved by continuesly updating this record.</body>
         </ownedComment>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_3O0G0KvQEequ5bpLsm2zUg" name="startTime">
           <ownedComment xmi:type="uml:Comment" xmi:id="_JA2jMB0eEeudtqhYN-7opw">
@@ -459,4 +495,54 @@ Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosít�
   <SB4UMLProfile:EntityDataType xmi:id="__C6J0B0REeudtqhYN-7opw" javaType="String" sqlType="VARCHAR2(250)" base_DataType="_WmG5kN1EEeqdr_fSkdhASA"/>
   <SB4UMLProfile:EntityDataType xmi:id="_H7psIB0SEeudtqhYN-7opw" javaType="String" sqlType="CHAR(1)" base_DataType="_UBX-4MwgEeq4CtjEciXs2w"/>
   <SB4UMLProfile:EntityDataType xmi:id="_L5970B0SEeudtqhYN-7opw" javaType="Long" sqlType="NUMBER(18)" base_DataType="_K50DEKvXEequ5bpLsm2zUg"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_wYs7IC8YEeujtb2iEd0z0g" base_Comment="_ncY08KrVEeqwasKhGu9goQ" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_5pFhYC8YEeujtb2iEd0z0g" base_Comment="_5o7wYC8YEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_Yx_ZcC8hEeujtb2iEd0z0g" base_Comment="_Yw8QkC8hEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_ayjjAC8hEeujtb2iEd0z0g" base_Comment="_cozWkKrVEeqwasKhGu9goQ" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_Db03sC8iEeujtb2iEd0z0g" base_Comment="_PkPNIB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_FEHrMC8iEeujtb2iEd0z0g" base_Comment="_R5Tt8KuZEequ5bpLsm2zUg" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_GbHTUC8iEeujtb2iEd0z0g" base_Comment="_Mhn7QB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_JCCSQC8iEeujtb2iEd0z0g" base_Comment="_UF3lQB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_K98lUC8iEeujtb2iEd0z0g" base_Comment="_rtpH0B0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_P7DYgC8iEeujtb2iEd0z0g" base_Comment="_AjgY4B0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_RqYBEC8iEeujtb2iEd0z0g" base_Comment="_Bt36QB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_S6XCQC8iEeujtb2iEd0z0g" base_Comment="_CyJasB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_UHfjwC8iEeujtb2iEd0z0g" base_Comment="_DusigB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_VguAgC8iEeujtb2iEd0z0g" base_Comment="_Sf1PQLEnEeqF9Zc6twRobA" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_WuI14C8iEeujtb2iEd0z0g" base_Comment="_dL1uocpEEeqppKLTAf4cUw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_Zb4OgC8iEeujtb2iEd0z0g" base_Comment="_K9qqoB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_azeTkC8iEeujtb2iEd0z0g" base_Comment="_CmhkEB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_dXJKMC8iEeujtb2iEd0z0g" base_Comment="_NAOYQB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_exUCIC8iEeujtb2iEd0z0g" base_Comment="_wYZxUB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_ge7agC8iEeujtb2iEd0z0g" base_Comment="_6FDSQB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_iOGSEC8iEeujtb2iEd0z0g" base_Comment="_lthYcB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_lWtBwC8iEeujtb2iEd0z0g" base_Comment="_nDJHkB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_numtQC8iEeujtb2iEd0z0g" base_Comment="_NypeQB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_pgwnYC8iEeujtb2iEd0z0g" base_Comment="_mp8DALElEeqF9Zc6twRobA" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_qnvdkC8iEeujtb2iEd0z0g" base_Comment="_V3Y2Ied7EeqaQ4LPIbrCUQ" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_r0UlcC8iEeujtb2iEd0z0g" base_Comment="_Xhj48ed7EeqaQ4LPIbrCUQ" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_uXfFwC8iEeujtb2iEd0z0g" base_Comment="_LRCdIB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_vgeHEC8iEeujtb2iEd0z0g" base_Comment="_KWECoB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_xEnaYC8iEeujtb2iEd0z0g" base_Comment="_JA2jMB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_yRmx8C8iEeujtb2iEd0z0g" base_Comment="_Jj60AB0eEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_6mNFYC8iEeujtb2iEd0z0g" base_Comment="_1am8YB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_7q740C8iEeujtb2iEd0z0g" base_Comment="_2cAvAB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_9Ta5kC8iEeujtb2iEd0z0g" base_Comment="_jyDacLEmEeqF9Zc6twRobA" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_-ehawC8iEeujtb2iEd0z0g" base_Comment="_f7RgsLEnEeqF9Zc6twRobA" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="__nnJwC8iEeujtb2iEd0z0g" base_Comment="_xe6i4B0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_AtudQC8jEeujtb2iEd0z0g" base_Comment="_wnUMgB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_CJJSYC8jEeujtb2iEd0z0g" base_Comment="_vvoWkB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_DWuf0C8jEeujtb2iEd0z0g" base_Comment="_SByNoB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_Ejo-4C8jEeujtb2iEd0z0g" base_Comment="_Qv-AcB0dEeudtqhYN-7opw" language="hu"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_3qIgYC8jEeujtb2iEd0z0g" base_Comment="_3qGrMC8jEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_Cl2AAS8kEeujtb2iEd0z0g" base_Comment="_Cl2AAC8kEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_E11ssS8kEeujtb2iEd0z0g" base_Comment="_E11ssC8kEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_QhCvkC8kEeujtb2iEd0z0g" base_Comment="_QhBhcC8kEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_nTCgsC8kEeujtb2iEd0z0g" base_Comment="_nTB5oC8kEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_o_UcUS8kEeujtb2iEd0z0g" base_Comment="_o_UcUC8kEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_BoZD0C8lEeujtb2iEd0z0g" base_Comment="_BoYcwC8lEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_EWN8AC8lEeujtb2iEd0z0g" base_Comment="_EWNU8C8lEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_J1Sz0C8lEeujtb2iEd0z0g" base_Comment="_J1SMwC8lEeujtb2iEd0z0g" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_XUbScC8lEeujtb2iEd0z0g" base_Comment="_SfDbEMwhEeq4CtjEciXs2w" language="en"/>
+  <ActionLanguage:TextualRepresentation xmi:id="_SGdt4C8nEeujtb2iEd0z0g" base_Comment="_SFgroC8nEeujtb2iEd0z0g" language="hu"/>
 </xmi:XMI>
