@@ -1,6 +1,7 @@
 package org.smartbit4all.businessevent.domain.service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import org.smartbit4all.businessevent.domain.service.BusinessEventChannel.ChannelType;
 import org.smartbit4all.core.SB4Function;
 import org.smartbit4all.core.SB4FunctionImpl;
@@ -36,12 +37,46 @@ class PostEventImpl extends SB4FunctionImpl<BusinessEventData, BusinessEventStat
       // Now we will start the execution asynchronously on another thread. We can't wait the
       // execution directly! We have to know if we start the execution right after the successful
       // transaction.
-      // TODO Two case: 1. start immediately --> persist, start at the end of the successful
-      // transaction.
+      
+      BusinessEventStateEnum state = calculateState();
       eventState =
-          channel.saveNewEvent(input, BusinessEventStateEnum.W, input.nextProcessTime);
+          channel.saveNewEvent(input, state, input.nextProcessTime);
+      
+      if (state == BusinessEventStateEnum.W) {
+        BusinessEventState eventStateCopy = BusinessEventState.of(eventState);
+        channel.processSchedule(input, eventStateCopy);
+      }
     }
     output = eventState;
+  }
+
+  /**
+   * Two case (depends on {@link BusinessEventChannelImpl#LOOK_AHAED_LIMIT}):
+   * <p> 
+   * -  1. start immediately --> persist, start at the end of the successful
+   * transaction.
+   * <p>  
+   * -  2. Store and wait for maintenance
+   * <p> 
+   * TODO Parameterize {@link BusinessEventChannelImpl#LOOK_AHAED_LIMIT}
+   * @return
+   */
+  private BusinessEventStateEnum calculateState() {
+    LocalDateTime now = timeService.getSystemTime();
+    BusinessEventStateEnum state;
+    long delay;
+    if (input.nextProcessTime == null || now.isAfter(input.nextProcessTime)) {
+      // The scheduling delay is 0. We can start immediately.
+      delay = 0;
+    } else {
+      delay = ChronoUnit.SECONDS.between(now, input.nextProcessTime);
+    }
+    if (delay > BusinessEventChannelImpl.LOOK_AHAED_LIMIT) {
+      state = BusinessEventStateEnum.A;
+    } else {
+      state = BusinessEventStateEnum.W;
+    }
+    return state;
   }
 
   @Override

@@ -14,6 +14,8 @@ public abstract class ProcessEventBase extends SB4FunctionImpl<BusinessEventData
   private BusinessEventChannelService channel;
 
   private BusinessEventState eventState;
+  
+  private RescheduleEvent rescheduleEvent;
 
   @Override
   public ProcessEvent event(BusinessEventData event) {
@@ -23,9 +25,15 @@ public abstract class ProcessEventBase extends SB4FunctionImpl<BusinessEventData
 
   @Override
   public RescheduleEvent reschedule() {
-    RescheduleEvent rescheduleEvent = new RescheduleEventImpl(this);
-    post().call(rescheduleEvent);
+    if (rescheduleEvent == null) {
+      rescheduleEvent = new RescheduleEventImpl(this);
+    }
     return rescheduleEvent;
+  }
+  
+  @Override
+  public boolean rescheduleNeeded() {
+    return rescheduleEvent != null;
   }
 
   @Override

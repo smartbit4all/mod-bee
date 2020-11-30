@@ -40,6 +40,8 @@ public interface ProcessEvent extends SB4Function<BusinessEventData, BinaryData>
    * @return
    */
   RescheduleEvent reschedule();
+  
+  boolean rescheduleNeeded();
 
   /**
    * The channel can be set by this as a builder API.

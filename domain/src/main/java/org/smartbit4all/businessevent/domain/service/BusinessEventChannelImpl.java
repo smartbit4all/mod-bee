@@ -41,8 +41,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.MimeTypeUtils;
 
 /**
@@ -54,6 +52,8 @@ import org.springframework.util.MimeTypeUtils;
  * @author Peter Boros
  */
 public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessEventChannelService {
+
+  public static final int LOOK_AHAED_LIMIT = 60;
 
   private static final Logger log = LoggerFactory.getLogger(BusinessEventChannelImpl.class);
 
@@ -420,17 +420,6 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
     result.processId = processLogId;
     result.eventData = event;
 
-    if (getType() == ChannelType.ASYNCHRONOUS) {
-      BusinessEventState eventStateCopy = BusinessEventState.of(result);
-      TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-
-        @Override
-        public void afterCommit() {
-          processSchedule(event, eventStateCopy);
-        }
-      });
-    }
-
     return result;
   }
 
@@ -663,15 +652,19 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
     // false.
     currentState.rescheduled = false;
 
-    // Now we execute the post section that was added to the process event itself. It's typically
-    // the reschedule or posting of new events.
-    if (processEvent.getPostSection() != null) {
-      processEvent.getPostSection().execute();
-    }
+    
+//    // Now we execute the post section that was added to the process event itself. It's typically
+//    // the reschedule or posting of new events.
+//    if (processEvent.getPostSection() != null) {
+//      processEvent.getPostSection().execute();
+//    }
+    
+    if (processEvent.rescheduleNeeded()) {
+      processEvent.reschedule().saveEvent();
+    } else {
 
     // We must take a look at the state. If the post section used the active event for rescheduling
     // for example. In these cases we let the active event record. Else we need to delete it.
-    if (!currentState.rescheduled) {
       activeEvent.services().crud().delete().by(TableDatas.builder(activeEvent).addRow()
           .set(activeEvent.activeEventId(), currentState.dbId)
           .build()).execute();
@@ -682,8 +675,19 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
 
 
   private String getExceptionResult(Throwable throwable) {
+    // FIXME refactor and move to an utility class
+    int maxLength = 240;
     if (throwable.getCause() != null) {
-      return getExceptionResult(throwable.getCause());
+      String exceptionResult = getExceptionResult(throwable.getCause());
+      // replace line breaks
+      exceptionResult = exceptionResult.replaceAll("[\\n\\r\\t]+"," ");
+      
+      // trim if too long
+      if (exceptionResult.length() > maxLength) {
+        exceptionResult = exceptionResult.substring(0, maxLength - 3);
+        exceptionResult += "...";
+      }
+      return exceptionResult;
     }
     return throwable.getMessage();
   }
@@ -783,12 +787,6 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
     }
   }
   
-  @Override
-  @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.NOT_SUPPORTED)
-  public void reprocessSync(BusinessEventData event, BusinessEventState state) throws Exception {
-    processSync(event, state);
-  }
-
   /**
    * Execute the event using the thread infrastructure of the current channel.
    */
@@ -852,11 +850,12 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
       processEvent.eventState(eventProcessStartedState);
       processEvent.execute();
 
-      // If the event has Bindary Data result, then use it in the BusinessEventState
+      // If the event has Binary Data result, then use it in the BusinessEventState
       eventProcessStartedState.result = processEvent.output();
       // If we successfully processed the event then we save the result.
       try {
         self.saveEventProcessFinished(eventProcessStartedState, null, processEvent);
+        rescheduleIfNeeded(processEvent);
       } catch (Exception ex) {
         // TODO Unable to save the result of the execution! The given channel must stop to avoid
         // duplications!!
@@ -866,6 +865,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
     } catch (Exception e) {
       try {
         self.saveEventProcessFinished(eventProcessStartedState, e, processEvent);
+        rescheduleIfNeeded(processEvent);
       } catch (Exception ex) {
         // TODO Unable to save the result of the execution! The given channel must stop to avoid
         // duplications!!
@@ -873,9 +873,23 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
             + "channel.", ex);
       }
       throw e;
+    } finally {
+      // Now we execute the post section that was added to the process event itself. It's typically
+      // the reschedule or posting of new events.
+      if (processEvent.getPostSection() != null) {
+        processEvent.getPostSection().execute();
+      }
     }
   }
 
+  private void rescheduleIfNeeded(ProcessEvent processEvent) throws Exception {
+    if (!processEvent.rescheduleNeeded()) {
+      return;
+    }
+    
+    processEvent.reschedule().doReschedule();
+  }
+  
   /**
    * The service that provide the {@link ProcessEvent} function for the channel.
    * 
@@ -988,7 +1002,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
     // runtime.
     LocalDateTime now = timeService.getSystemTime();
     LocalDateTime aliveLimitTime = now.minusSeconds(20);
-    LocalDateTime lookAheadLimit = now.plusMinutes(1);
+    LocalDateTime lookAheadLimit = now.plusSeconds(LOOK_AHAED_LIMIT);
 
     TableData<ActiveEventDef> result = new TableData<>(activeEvent);
 
@@ -1001,7 +1015,7 @@ public class BusinessEventChannelImpl implements BusinessEventChannel, BusinessE
                 .AND(activeEvent.eventChannel().eq(channelCode)))
             .order(activeEvent.nextProcessTime().asc())
             .limit(allocationLimit).into(result);
-
+    
     try {
       query.execute();
 
