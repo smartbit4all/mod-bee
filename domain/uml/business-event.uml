@@ -5,11 +5,6 @@
       <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
     </packageImport>
     <packagedElement xmi:type="uml:Package" xmi:id="_axUCwKrQEeqwasKhGu9goQ" name="Esemény tároló modul" URI="org.smartbit4all.BusinessEvent">
-      <ownedComment xmi:type="uml:Comment" xmi:id="_AiNN0B0cEeudtqhYN-7opw">
-        <body>Az OBM másik adatköre az úgynevezett üzleti események, amelyet a Business Event Engine (BEE) modullal valósít meg. Ez tárolja az üzleti eseményeket, lehetővé téve, hogy a rendszer ezeket hibatűrő módon, akár később újra feldolgozza. Pl. Ha a BPMN folyamat egy olyan eseményt küld vissza, hogy hívjuk meg a CMDB-t, akkor hiba esetén képesek leszünk ismétlésre.&#xD;
-Itt az esemény adatai az Event Body-ban vannak és a feldolgozás alatti eseményeknek van egy rekordja az Active Event-ben, míg a feldolgozás után ez törlődik. Tartozik hozzá egy feldolgozási log bejegyzés az EventProcessLog, hogy ha többször próbáltuk futtatni, akkor az látható legyen.&#xD;
-Mivel minden eseményben kitöltjük a businessEntityRef-et a process azonosítóra, ezért erre szűrve és a createdAt időpontra rendezve megkapjuk, hogy milyen események történtek azt adott folyamattal. Tesztelés esetén ezt lehet összevetni az elvárt esemény történettel.</body>
-      </ownedComment>
       <packagedElement xmi:type="uml:Interface" xmi:id="_ER9O4KrSEeqwasKhGu9goQ" name="EventBody">
         <ownedComment xmi:type="uml:Comment" xmi:id="_ncY08KrVEeqwasKhGu9goQ">
           <body>Az események adattartalma, amely a feldolgozás során csak az állapot mezőjében változik.</body>
