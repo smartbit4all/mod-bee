@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <container>
-    <entry modelId="_ER9O4KrSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity/EventBodyDef" type="interface" />
-    <entry modelId="_ER_rIKrSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity/ActiveEventDef" type="interface" />
-    <entry modelId="_ESA5RqrSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity/EventBinaryContentDef" type="interface" />
-    <entry modelId="_ESA5T6rSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity/EventProcessLogDef" type="interface" />
-    <entry modelId="_z9T0QKuYEequ5bpLsm2zUg" filePath="org.smartbit4all.businessevent.domain.entity/ApplicationRuntimeDef" type="interface" />
-    <entry modelId="_sKNp4Od5EeqaQ4LPIbrCUQ" filePath="org.smartbit4all.businessevent.domain.entity/EventChannelDef" type="interface" />
+    <entry modelId="_ER9O4KrSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity.EventBodyDef" type="interface" />
+    <entry modelId="_ER_rIKrSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity.ActiveEventDef" type="interface" />
+    <entry modelId="_ESA5RqrSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity.EventBinaryContentDef" type="interface" />
+    <entry modelId="_ESA5T6rSEeqwasKhGu9goQ" filePath="org.smartbit4all.businessevent.domain.entity.EventProcessLogDef" type="interface" />
+    <entry modelId="_z9T0QKuYEequ5bpLsm2zUg" filePath="org.smartbit4all.businessevent.domain.entity.ApplicationRuntimeDef" type="interface" />
+    <entry modelId="_sKNp4Od5EeqaQ4LPIbrCUQ" filePath="org.smartbit4all.businessevent.domain.entity.EventChannelDef" type="interface" />
 </container>
