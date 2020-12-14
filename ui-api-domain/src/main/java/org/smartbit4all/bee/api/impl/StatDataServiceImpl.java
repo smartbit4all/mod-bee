@@ -125,7 +125,7 @@ public class StatDataServiceImpl implements StatDataService {
         eventTypeStatData.setEventCode(row.get(activeEventDef.eventbody().businessEntity()));
         eventTypeStatData.setEventName(row.get(activeEventDef.eventbody().businessEntity()));
         eventTypeStatData.setNoOfEvents(row.get(activeEventDef.count()));
-        statData.getEventData().add(eventTypeStatData);
+        statData.addEventDataItem(eventTypeStatData);
       }
       return new ArrayList<>(channels.values());
     } catch (Exception e) {
