@@ -1,12 +1,12 @@
 plugins {
     id 'org.springframework.boot' version '2.2.6.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-//    id 'war'
+    id 'war'
 }
 
-//war {
-//	enabled = true
-//}
+war {
+	enabled = true
+}
 
 //bootWar {
 //	classifier = 'boot'
@@ -30,5 +30,5 @@ dependencies {
     //providedCompile('javax.servlet:javax.servlet-api:4.0.1')
     //providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     //providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-    runtimeOnly 'org.springframework.boot:spring-boot-starter-tomcat'
+    //runtimeOnly 'org.springframework.boot:spring-boot-starter-tomcat'
 }
