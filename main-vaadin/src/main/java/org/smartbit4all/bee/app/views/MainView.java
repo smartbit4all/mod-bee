@@ -13,6 +13,7 @@ import org.smartbit4all.ui.vaadin.util.css.Overflow;
 import org.smartbit4all.ui.vaadin.view.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
@@ -20,6 +21,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.page.Viewport;
+import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLayout;
@@ -142,6 +144,16 @@ public class MainView extends FlexBoxLayout
     // - When tabbed navigation is turned off they appear in the AppBar.
 
     appBar = new AppBar(Home.class, "");
+
+    appBar.getThemeButton().addClickListener(e -> {
+      ThemeList themeList = UI.getCurrent().getElement().getThemeList(); //
+
+      if (themeList.contains(Lumo.DARK)) { //
+        themeList.remove(Lumo.DARK);
+      } else {
+        themeList.add(Lumo.DARK);
+      }
+    });
 
     // Tabbed navigation
     if (navigationTabs) {

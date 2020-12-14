@@ -40,7 +40,7 @@ div .dashboard__actualProcessStat label:not(:first-child){
 
 div .dashboard__actualProcessStatData label{
   padding: 2px;
-  background-color: Gainsboro;
+  background-color: var(--lumo-contrast-20pct);
   margin-right: 10px;
   font-weight: bold;
 }
