@@ -1,18 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2020 - 2020 it4all Hungary Kft.
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.smartbit4all.businessevent.ui.views.statistics;
 
@@ -22,11 +20,8 @@ import org.smartbit4all.bee.api.StatDataService;
 import org.smartbit4all.bee.api.model.EventChannelActualProcessStatData;
 import org.smartbit4all.bee.api.model.EventChannelStatData;
 import org.smartbit4all.bee.api.model.EventTypeStatData;
-import org.smartbit4all.ui.vaadin.components.FlexBoxLayout;
 import org.smartbit4all.ui.vaadin.util.LumoStyles;
 import org.smartbit4all.ui.vaadin.util.UIUtils;
-import org.smartbit4all.ui.vaadin.util.css.BoxSizing;
-import org.smartbit4all.ui.vaadin.util.css.Display;
 import org.smartbit4all.ui.vaadin.view.ViewFrame;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -38,6 +33,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -64,7 +60,7 @@ public class DashBoard extends ViewFrame {
     Component eventChannelStat = createEventChannelStat(startTime);
     Component actualProcessStatData = createActualProcessStatData();
 
-    FlexBoxLayout content = new FlexBoxLayout(currentTimeLabel, currentWorkingLoad,
+    FlexLayout content = new FlexLayout(currentTimeLabel, currentWorkingLoad,
         eventChannelStat, actualProcessStatData);
     content.setAlignItems(FlexComponent.Alignment.CENTER);
     content.setFlexDirection(FlexDirection.COLUMN);
@@ -88,23 +84,23 @@ public class DashBoard extends ViewFrame {
       currentTime = LocalDateTime.now();
       setViewContent(createContent(startTime));
     });
-    FlexBoxLayout headerLayout =
-        new FlexBoxLayout(createHeader("Aktuális futási terheltség"), refreshButton);
+    FlexLayout headerLayout =
+        new FlexLayout(createHeader("Aktuális futási terheltség"), refreshButton);
     headerLayout.setClassName(CLASS_NAME + "__headerLayout");
-    FlexBoxLayout actualEventsStatData = new FlexBoxLayout(headerLayout, createActualEventsStats());
-    actualEventsStatData.setBoxSizing(BoxSizing.BORDER_BOX);
-    actualEventsStatData.setDisplay(Display.BLOCK);
+    FlexLayout actualEventsStatData = new FlexLayout(headerLayout, createActualEventsStats());
+    actualEventsStatData.getStyle().set("box-sizing", "border-box");
+    actualEventsStatData.getStyle().set("display", "block");
     return actualEventsStatData;
   }
 
-  private FlexBoxLayout createHeader(String title) {
-    FlexBoxLayout header = new FlexBoxLayout(UIUtils.createH2Label(title));
+  private FlexLayout createHeader(String title) {
+    FlexLayout header = new FlexLayout(UIUtils.createH2Label(title));
     header.setAlignItems(FlexComponent.Alignment.START);
     return header;
   }
 
   private Component createActualEventsStats() {
-    FlexBoxLayout actualEventsStats = new FlexBoxLayout();
+    FlexLayout actualEventsStats = new FlexLayout();
     for (int i = 0; i < 4; i++) {
       actualEventsStats.add(createActualEventStat(i));
     }
@@ -167,7 +163,7 @@ public class DashBoard extends ViewFrame {
     }
     noOfEvents.add(new Label(" DB"));
 
-    FlexBoxLayout actualEventLayout = new FlexBoxLayout();
+    FlexLayout actualEventLayout = new FlexLayout();
     actualEventLayout.addComponentAsFirst(timeLabel);
     actualEventLayout.addComponentAtIndex(1, noOfEvents);
     actualEventLayout.addComponentAtIndex(2, dateLabel);
@@ -208,7 +204,7 @@ public class DashBoard extends ViewFrame {
 
 
   private Component createEventChannelStat(LocalDateTime startTime) {
-    FlexBoxLayout eventChannelStat = new FlexBoxLayout();
+    FlexLayout eventChannelStat = new FlexLayout();
     List<EventChannelStatData> eventChannelStatData =
         statDataService.getEventChannelStatDatas(startTime, currentTime);
 
@@ -251,16 +247,16 @@ public class DashBoard extends ViewFrame {
 
     eventChannelStat.add(channelLayout, successLayout, failureLayout, rateLayout,
         averageProcessTimeLayout);
-    eventChannelStat.setBoxSizing(BoxSizing.BORDER_BOX);
+    eventChannelStat.getStyle().set("box-sizing", "border-box");
+    eventChannelStat.getStyle().set("background-color", "var(--lumo-base-color)");
     eventChannelStat.setWidth(MAX_WIDTH);
-    eventChannelStat.setBackgroundColor(LumoStyles.Color.BASE_COLOR);
     eventChannelStat.setClassName(CLASS_NAME + "__eventchannel");
     return eventChannelStat;
 
   }
 
   private Component createActualProcessStatData() {
-    FlexBoxLayout header = createHeader("Aktuális feldolgozási folyamat");
+    FlexLayout header = createHeader("Aktuális feldolgozási folyamat");
     List<EventChannelActualProcessStatData> eventChannelActualProcessStatDatas =
         statDataService.getEventChannelActualProcessStatDatas(null, null);
 
@@ -316,15 +312,15 @@ public class DashBoard extends ViewFrame {
       noOfMessagesLayout.add(new Label(noOfMessages + " db"));
     }
 
-    FlexBoxLayout actualProcessStatLayout =
-        new FlexBoxLayout(channelLayout, messageTypeLayout, noOfMessagesLayout);
+    FlexLayout actualProcessStatLayout =
+        new FlexLayout(channelLayout, messageTypeLayout, noOfMessagesLayout);
     actualProcessStatLayout.setWidth(MAX_WIDTH);
-    actualProcessStatLayout.setBackgroundColor(LumoStyles.Color.BASE_COLOR);
+    actualProcessStatLayout.getStyle().set("background-color", "var(--lumo-base-color)");
     actualProcessStatLayout.setClassName(CLASS_NAME + "__actualProcessStat");
 
-    FlexBoxLayout finalLayout = new FlexBoxLayout(header, actualProcessStatLayout);
-    finalLayout.setBoxSizing(BoxSizing.BORDER_BOX);
-    finalLayout.setDisplay(Display.BLOCK);
+    FlexLayout finalLayout = new FlexLayout(header, actualProcessStatLayout);
+    finalLayout.getStyle().set("box-sizing", "border-box");
+    finalLayout.getStyle().set("display", "block");
     return finalLayout;
   }
 }

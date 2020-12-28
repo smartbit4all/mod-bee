@@ -1,31 +1,27 @@
 /*******************************************************************************
  * Copyright (C) 2020 - 2020 it4all Hungary Kft.
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Lesser General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.smartbit4all.bee.app.views;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smartbit4all.ui.vaadin.components.FlexBoxLayout;
 import org.smartbit4all.ui.vaadin.components.navigation.bar.AppBar;
 import org.smartbit4all.ui.vaadin.components.navigation.bar.TabBar;
 import org.smartbit4all.ui.vaadin.components.navigation.drawer.NaviDrawer;
 import org.smartbit4all.ui.vaadin.components.navigation.drawer.NaviItem;
 import org.smartbit4all.ui.vaadin.components.navigation.drawer.NaviMenu;
 import org.smartbit4all.ui.vaadin.util.UIUtils;
-import org.smartbit4all.ui.vaadin.util.css.Overflow;
 import org.smartbit4all.ui.vaadin.view.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
@@ -35,6 +31,7 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.dom.ThemeList;
@@ -65,7 +62,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
 @Push
 @UIScope
-public class MainView extends FlexBoxLayout
+public class MainView extends FlexLayout
     implements MainLayout, RouterLayout, PageConfigurator, AfterNavigationObserver {
 
   private static final Logger log = LoggerFactory.getLogger(MainView.class);
@@ -73,12 +70,12 @@ public class MainView extends FlexBoxLayout
 
   private Div appHeaderOuter;
 
-  private FlexBoxLayout row;
+  private FlexLayout row;
   private NaviDrawer naviDrawer;
-  private FlexBoxLayout column;
+  private FlexLayout column;
 
   private Div appHeaderInner;
-  private FlexBoxLayout viewContainer;
+  private FlexLayout viewContainer;
   private Div appFooterInner;
 
   private Div appFooterOuter;
@@ -113,20 +110,20 @@ public class MainView extends FlexBoxLayout
   private void initStructure() {
     naviDrawer = new NaviDrawer(getTranslation("login.appname"), "bee-v1.jpg");
 
-    viewContainer = new FlexBoxLayout();
+    viewContainer = new FlexLayout();
     viewContainer.addClassName(CLASS_NAME + "__view-container");
-    viewContainer.setOverflow(Overflow.HIDDEN);
+    viewContainer.getStyle().set("overflow", "hidden");
 
-    column = new FlexBoxLayout(viewContainer);
+    column = new FlexLayout(viewContainer);
     column.addClassName(CLASS_NAME + "__column");
     column.setFlexDirection(FlexDirection.COLUMN);
     column.setFlexGrow(1, viewContainer);
-    column.setOverflow(Overflow.HIDDEN);
+    column.getStyle().set("overflow", "hidden");
 
-    row = new FlexBoxLayout(naviDrawer, column);
+    row = new FlexLayout(naviDrawer, column);
     row.addClassName(CLASS_NAME + "__row");
     row.setFlexGrow(1, column);
-    row.setOverflow(Overflow.HIDDEN);
+    row.getStyle().set("overflow", "hidden");
     add(row);
     setFlexGrow(1, row);
   }
