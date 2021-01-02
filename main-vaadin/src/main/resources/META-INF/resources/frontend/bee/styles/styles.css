@@ -1,0 +1,25 @@
+:root {
+  /* MainView, AppBar, Navi properties */
+  --app-bar-height: var(--lumo-size-xl);
+
+  --navi-drawer-width: calc(var(--lumo-size-m) * 7);
+  --navi-drawer-rail-width: calc(var(--lumo-size-m) * 1.75);
+  --navi-item-indentation: calc(var(--lumo-icon-size-s) + var(--lumo-space-l));
+
+  --details-drawer-width: calc(var(--lumo-size-m) * 11);
+
+  --transition-duration-s: 160ms;
+  --transition-duration-m: 240ms;
+  --transition-duration-l: 320ms;
+
+}
+
+.root {
+  background-color: var(--lumo-contrast-5pct);
+}
+
+.app-header-outer,
+.app-footer-outer {
+  z-index: 3;
+}
+

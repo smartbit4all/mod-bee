@@ -21,7 +21,7 @@ import org.smartbit4all.ui.vaadin.components.navigation.bar.TabBar;
 import org.smartbit4all.ui.vaadin.components.navigation.drawer.NaviDrawer;
 import org.smartbit4all.ui.vaadin.components.navigation.drawer.NaviItem;
 import org.smartbit4all.ui.vaadin.components.navigation.drawer.NaviMenu;
-import org.smartbit4all.ui.vaadin.util.UIUtils;
+import org.smartbit4all.ui.vaadin.util.Css;
 import org.smartbit4all.ui.vaadin.view.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasElement;
@@ -45,19 +45,11 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.theme.lumo.Lumo;
 
-@CssImport(value = "./styles/components/charts.css", themeFor = "vaadin-chart",
-    include = "vaadin-chart-default-theme")
-@CssImport(value = "./styles/components/floating-action-button.css", themeFor = "vaadin-button")
+@CssImport(value = "./bee/styles/styles.css", include = "lumo-badge")
 @CssImport(value = "./styles/components/grid.css", themeFor = "vaadin-grid")
-@CssImport("./styles/lumo/border-radius.css")
-@CssImport("./styles/lumo/icon-size.css")
-@CssImport("./styles/lumo/margin.css")
-@CssImport("./styles/lumo/padding.css")
-@CssImport("./styles/lumo/shadow.css")
-@CssImport("./styles/lumo/spacing.css")
-@CssImport("./styles/lumo/typography.css")
-@CssImport("./styles/misc/box-shadow-borders.css")
-@CssImport(value = "./styles/styles.css", include = "lumo-badge")
+@CssImport("./styles/lumo/defaults.css")
+@CssImport("./styles/lumo/headers.css")
+@CssImport("./styles/lumo/spacing-resp.css")
 @JsModule("@vaadin/vaadin-lumo-styles/badge")
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
 @Push
@@ -171,7 +163,7 @@ public class MainView extends FlexLayout
     // Tabbed navigation
     if (navigationTabs) {
       tabBar = new TabBar(Home.class);
-      UIUtils.setTheme(Lumo.DARK, tabBar);
+      Css.setTheme(Lumo.DARK, tabBar);
 
       // Shift-click to add a new tab
       for (NaviItem item : naviDrawer.getMenu().getNaviItems()) {
@@ -187,7 +179,7 @@ public class MainView extends FlexLayout
 
       // Default navigation
     } else {
-      UIUtils.setTheme(Lumo.DARK, appBar);
+      Css.setTheme(Lumo.DARK, appBar);
       setAppHeaderInner(appBar);
     }
   }

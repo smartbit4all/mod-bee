@@ -20,8 +20,8 @@ import org.smartbit4all.bee.api.StatDataService;
 import org.smartbit4all.bee.api.model.EventChannelActualProcessStatData;
 import org.smartbit4all.bee.api.model.EventChannelStatData;
 import org.smartbit4all.bee.api.model.EventTypeStatData;
-import org.smartbit4all.ui.vaadin.util.LumoStyles;
-import org.smartbit4all.ui.vaadin.util.UIUtils;
+import org.smartbit4all.ui.vaadin.util.Css;
+import org.smartbit4all.ui.vaadin.util.Labels;
 import org.smartbit4all.ui.vaadin.view.ViewFrame;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -94,7 +94,7 @@ public class DashBoard extends ViewFrame {
   }
 
   private FlexLayout createHeader(String title) {
-    FlexLayout header = new FlexLayout(UIUtils.createH2Label(title));
+    FlexLayout header = new FlexLayout(Labels.createH2Label(title));
     header.setAlignItems(FlexComponent.Alignment.START);
     return header;
   }
@@ -168,7 +168,7 @@ public class DashBoard extends ViewFrame {
     actualEventLayout.addComponentAtIndex(1, noOfEvents);
     actualEventLayout.addComponentAtIndex(2, dateLabel);
 
-    UIUtils.setBackgroundColor(LumoStyles.Color.BASE_COLOR, actualEventLayout);
+    Css.setBackgroundColor(Css.Color.BASE_COLOR, actualEventLayout);
     actualEventLayout.setAlignItems(FlexComponent.Alignment.CENTER);
     actualEventLayout.setFlexDirection(FlexDirection.COLUMN);
 
@@ -194,7 +194,7 @@ public class DashBoard extends ViewFrame {
           this.startTime = currentTime.minusDays(1);
           break;
         case 3:
-          this.startTime = currentTime.minusDays(7);
+          this.startTime = currentTime.minusDays(70);
           break;
       }
       clickedDiv = count;
