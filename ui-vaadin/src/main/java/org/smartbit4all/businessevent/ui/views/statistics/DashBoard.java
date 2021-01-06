@@ -22,7 +22,7 @@ import org.smartbit4all.bee.api.model.EventChannelStatData;
 import org.smartbit4all.bee.api.model.EventTypeStatData;
 import org.smartbit4all.ui.vaadin.util.Css;
 import org.smartbit4all.ui.vaadin.util.Labels;
-import org.smartbit4all.ui.vaadin.view.ViewFrame;
+import org.smartbit4all.ui.vaadin.view.ScreenFrame;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
@@ -38,7 +38,7 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 @CssImport("./bee/styles/views/dashboard.css")
-public class DashBoard extends ViewFrame {
+public class DashBoard extends ScreenFrame {
 
   private StatDataService statDataService;
   private static final String CLASS_NAME = "dashboard";
@@ -51,7 +51,7 @@ public class DashBoard extends ViewFrame {
 
   public DashBoard(StatDataService statDataService) {
     this.statDataService = statDataService;
-    setViewContent(createContent(startTime));
+    setScreenContent(createContent(startTime));
   }
 
   private Component createContent(LocalDateTime startTime) {
@@ -82,7 +82,7 @@ public class DashBoard extends ViewFrame {
     Button refreshButton = new Button(new Icon(VaadinIcon.REFRESH));
     refreshButton.addClickListener(event -> {
       currentTime = LocalDateTime.now();
-      setViewContent(createContent(startTime));
+      setScreenContent(createContent(startTime));
     });
     FlexLayout headerLayout =
         new FlexLayout(createHeader("Aktuális futási terheltség"), refreshButton);
@@ -198,7 +198,7 @@ public class DashBoard extends ViewFrame {
           break;
       }
       clickedDiv = count;
-      this.setViewContent(createContent(this.startTime));
+      this.setScreenContent(createContent(this.startTime));
     });
   }
 
