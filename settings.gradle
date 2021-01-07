@@ -1,29 +1,17 @@
 rootProject.name = 'business-event'
 include 'bee-domain'
 include 'bee-api-rest'
-include 'bee-server'
 include 'bee-ui-api'
 include 'bee-ui-api-domain'
 include 'bee-ui-api-mock'
 include 'bee-ui-common'
 include 'bee-ui-vaadin'
-include 'bee-main-vaadin'
-include 'bee-app-vaadin-all'
-include 'bee-app-vaadin-mock'
-include 'bee-app-vaadin-client'
-include 'bee-app-server'
 project(':bee-domain').projectDir = file('domain')
 project(':bee-api-rest').projectDir = file('api-rest')
-project(':bee-server').projectDir = file('server')
 project(':bee-ui-api').projectDir = file('ui-api')
 project(':bee-ui-api-domain').projectDir = file('ui-api-domain')
 project(':bee-ui-api-mock').projectDir = file('ui-api-mock')
 project(':bee-ui-common').projectDir = file('ui-common')
 project(':bee-ui-vaadin').projectDir = file('ui-vaadin')
-project(':bee-main-vaadin').projectDir = file('main-vaadin')
-project(':bee-app-vaadin-all').projectDir = file('app-configs/app-vaadin-all')
-project(':bee-app-vaadin-mock').projectDir = file('app-configs/app-vaadin-mock')
-project(':bee-app-vaadin-client').projectDir = file('app-configs/app-vaadin-client')
-project(':bee-app-server').projectDir = file('app-configs/app-server')
 
 includeBuild '../platform'
